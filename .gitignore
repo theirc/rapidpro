@@ -12,7 +12,7 @@ coverage_html_report
 env
 build
 config/gen
-config/settings.py
+#config/settings.py
 coverage-report
 celerybeat-schedule.db
 db
@@ -26,7 +26,7 @@ static/coffee/simulator.js
 static/coffee/temba.js
 static/coffee/formax.js
 static/javascripts/
-temba/settings.py
+#temba/settings.py
 temba/smartmin
 temba.db
 smartmin
