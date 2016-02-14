@@ -11,6 +11,7 @@ import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "temba.settings")
 
 from django.core.wsgi import get_wsgi_application
-from dj_static import Cling, MediaCling
+from whitenoise.django import DjangoWhiteNoise
 
-application = Cling(MediaCling(get_wsgi_application()))
+application = get_wsgi_application()
+application = DjangoWhiteNoise(application)
