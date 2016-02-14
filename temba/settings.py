@@ -101,3 +101,8 @@ import dj_database_url
 
 if 'DATABASE_URL' in os.environ:
     DATABASES['default'] = dj_database_url.config()
+
+COMPRESS_URL = '/static/'
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
+STATIC_URL = '/static/'
