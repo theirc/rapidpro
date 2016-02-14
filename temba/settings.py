@@ -103,7 +103,7 @@ if 'DATABASE_URL' in os.environ:
 COMPRESS_URL = '/static/'
 STATIC_URL = '/static/'
 
-COMPRESS_ENABLED = True
+COMPRESS_ENABLED = False
 COMPRESS_OFFLINE = False
 
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
