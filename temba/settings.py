@@ -86,6 +86,7 @@ warnings.filterwarnings(
 # Make our sitestatic URL be our static URL on development
 #-----------------------------------------------------------------------------------
 STATIC_URL = '/sitestatic/'
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 
 import dj_database_url
