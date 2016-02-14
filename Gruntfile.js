@@ -4,7 +4,7 @@ module.exports = function (grunt) {
         var exec = require('child_process').exec;
         var cb = this.async();
 
-        exec('npm install less -g', {}, function (err, stdout, stderr) {
+        exec('npm install less coffee-script -g', {}, function (err, stdout, stderr) {
             console.log(stdout);
             console.log(stderr);
             exec('npm install', {}, function (err, stdout, stderr) {
