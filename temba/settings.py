@@ -107,3 +107,21 @@ STATIC_URL = '/static/'
 
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = True
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_PRELOAD_METADATA = True # necessary to fix manage.py collectstatic command to only upload changed files instead of all files
+
+S3_URL = 'https://%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+MEDIA_URL = S3_URL + '/media/'
+
+STATIC_URL = S3_URL + '/static/'
+
+ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
+
+
+COMPRESS_URL = STATIC_URL
+COMPRESS_STORAGE = 'temba.storage.CachedS3BotoStorage'
+STATICFILES_STORAGE = COMPRESS_STORAGE
+
