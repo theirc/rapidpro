@@ -7,13 +7,14 @@ module.exports = function (grunt) {
         exec('npm install less -g', {}, function (err, stdout, stderr) {
             console.log(stdout);
             console.log(stderr);
-        exec('npm install', {}, function (err, stdout, stderr) {
-            console.log(stdout);
-            console.log(stderr);
-            exec('node node_modules/bower/bin/bower install', {}, function (err, stdout, stderr) {
+            exec('npm install', {}, function (err, stdout, stderr) {
                 console.log(stdout);
                 console.log(stderr);
-                cb();
+                exec('node node_modules/bower/bin/bower install', {}, function (err, stdout, stderr) {
+                    console.log(stdout);
+                    console.log(stderr);
+                    cb();
+                });
             });
         });
 
