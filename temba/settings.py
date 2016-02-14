@@ -69,9 +69,15 @@ MIDDLEWARE_CLASSES = ('temba.middleware.ExceptionMiddleware',) + MIDDLEWARE_CLAS
 #-----------------------------------------------------------------------------------
 # In development, perform background tasks in the web thread (synchronously)
 #-----------------------------------------------------------------------------------
-CELERY_ALWAYS_EAGER = True
-CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
-BROKER_BACKEND = 'memory'
+#CELERY_ALWAYS_EAGER = True
+#CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+#BROKER_BACKEND = 'memory'
+
+COMPRESS_ENABLED = True
+
+SEND_MESSAGES = True
+SEND_WEBHOOKS = True
+SEND_EMAILS = True
 
 #-----------------------------------------------------------------------------------
 # This setting throws an exception if a naive datetime is used anywhere. (they should
