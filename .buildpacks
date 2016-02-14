@@ -2,4 +2,5 @@ https://github.com/ddollar/heroku-buildpack-apt.git
 https://github.com/sampettersson/dokku-grunt-buildpack
 https://github.com/cyberdelia/heroku-geo-buildpack/
 https://github.com/a2ikm/heroku-buildpack-libjpeg62.git
-https://github.com/heroku/heroku-buildpack-python
+https://github.com/dulaccc/heroku-buildpack-geodjango
+
