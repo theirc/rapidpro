@@ -26,9 +26,6 @@ module.exports = function (grunt) {
 
     gtx.loadAuto();
 
-    var gruntConfig = require('./grunt');
-    gruntConfig.package = require('./package.json');
-
     gtx.alias('dokku:production', ['install']);
 
     gtx.finalise();
