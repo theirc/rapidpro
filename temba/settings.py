@@ -114,9 +114,9 @@ AWS_PRELOAD_METADATA = True # necessary to fix manage.py collectstatic command t
 S3_URL = 'https://%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 MEDIA_URL = S3_URL + '/media/'
 
-STATIC_URL = S3_URL + '/static/'
+STATIC_URL = S3_URL + '/'
 
-ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
+ADMIN_MEDIA_PREFIX = STATIC_URL + '/'
 
 
 COMPRESS_URL = STATIC_URL
