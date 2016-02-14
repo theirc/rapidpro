@@ -94,8 +94,6 @@ warnings.filterwarnings(
 STATIC_URL = '/sitestatic/'
 #STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-BROKER_URL = os.environ.get('RABBITMQ_URL')
-BROKER_BACKEND = "amqp"
 
 import dj_database_url
 
@@ -106,7 +104,7 @@ COMPRESS_URL = '/static/'
 STATIC_URL = '/static/'
 
 COMPRESS_ENABLED = True
-COMPRESS_OFFLINE = True
+COMPRESS_OFFLINE = False
 
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
