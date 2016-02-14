@@ -963,8 +963,9 @@ REDIS_DB = 10 if TESTING else 15
 REDIS_URL = os.environ.get('REDIS_URL') #"redis://dokku-redis-sms:6379/0"
 if REDIS_URL:
     host, db = REDIS_URL.replace("redis://", "").split('/')
-    REDIS_HOST, REDIS_PORT = host.split(':')
-    REDIS_DB = db
+    host = host.split(':')
+    REDIS_HOST, REDIS_PORT = (host[0], int(host[1]))
+    REDIS_DB = int(db)
 
 BROKER_URL = 'redis://%s:%d/%d' % (REDIS_HOST, REDIS_PORT, REDIS_DB)
 
