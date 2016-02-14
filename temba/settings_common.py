@@ -1077,3 +1077,8 @@ SEGMENT_IO_KEY = os.environ.get('SEGMENT_IO_KEY', '')
 
 LIBRATO_USER = os.environ.get('LIBRATO_USER', '')
 LIBRATO_TOKEN = os.environ.get('LIBRATO_TOKEN', '')
+
+
+GEOS_LIBRARY_PATH = os.environ.get('GEOS_LIBRARY_PATH')
+GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
+
