@@ -94,6 +94,8 @@ warnings.filterwarnings(
 STATIC_URL = '/sitestatic/'
 #STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
+BROKER_URL = os.environ.get('RABBITMQ_URL')
+BROKER_BACKEND = "amqp"
 
 import dj_database_url
 
