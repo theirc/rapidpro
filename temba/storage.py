@@ -20,7 +20,17 @@ class CachedS3BotoStorage(S3BotoStorage):
         self.local_storage = get_storage_class(
             "compressor.storage.CompressorFileStorage")()
 
-    def save(self, name, content):
+    def url(self, name):
+        name = self._normalize_name(self._clean_name(name))
+        if self.custom_domain:
+            return "%s//%s/%s" % (self.url_protocol,
+                                  self.custom_domain, name)
+
+        return self.connection.generate_url(self.querystring_expire,
+            method='GET', bucket=self.bucket.name, key=self._encode_name(name),
+            query_auth=False, force_http=not self.secure_urls)
+
+    def save(self, name, content, max_length=None):
         name = super(CachedS3BotoStorage, self).save(name, content)
         self.local_storage._save(name, content)
         return name
