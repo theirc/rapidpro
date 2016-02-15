@@ -14,6 +14,7 @@ module.exports = function (grunt) {
         coffee: {
             compile: {
                 expand: true,
+                flatten: false,
                 cwd: __dirname + "/static/coffee/",
                 src: ['**/*.coffee'],
                 dest: __dirname + '/static/js/',
@@ -24,10 +25,11 @@ module.exports = function (grunt) {
         less: {
             compile: {
                 expand: true,
+                flatten: false,
                 cwd: __dirname + "/static/less/",
                 src: ['**/*.less'],
                 dest: __dirname + '/static/css/',
-                ext: '.js'
+                ext: '.css'
             }
         }
     });
