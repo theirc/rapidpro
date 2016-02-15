@@ -113,15 +113,16 @@ AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 AWS_PRELOAD_METADATA = True  # necessary to fix manage.py collectstatic command to only upload changed files instead of all files
 AWS_QUERYSTRING_AUTH = False
 
-S3_URL = 'https://%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+S3_BASE = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+S3_URL = 'https://%s' % S3_BASE
 MEDIA_URL = S3_URL + '/media/'
 
 STATIC_URL = S3_URL + '/'
-
+AWS_S3_CUSTOM_DOMAIN = S3_BASE
 ADMIN_MEDIA_PREFIX = STATIC_URL + '/'
 
 MEDIAFILES_LOCATION = 'media'
-MEDIA_URL = "https://%s/%s/" % (S3_URL, MEDIAFILES_LOCATION)
+MEDIA_URL = "https://%s/%s/" % (S3_BASEg, MEDIAFILES_LOCATION)
 DEFAULT_FILE_STORAGE = 'temba.storage.MediaStorage'
 
 
