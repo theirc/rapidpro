@@ -388,21 +388,22 @@
 
 
 -block extra-less
-  {% lessblock %}
-    :plain
-      a.errored:hover {
-        color:@flat-darkred;
-      }
-
-      .title {
-        .channel-roles {
-          font-size:14px;
-          margin-top:0px;
-          padding:0px;
-          line-height:14px;
+  -compress css inline
+    {% lessblock %}
+      :plain
+        a.errored:hover {
+          color:@flat-darkred;
         }
-      }
-  {% endlessblock %}
+
+        .title {
+          .channel-roles {
+            font-size:14px;
+            margin-top:0px;
+            padding:0px;
+            line-height:14px;
+          }
+        }
+    {% endlessblock %}
 
 -block extra-style
   :css

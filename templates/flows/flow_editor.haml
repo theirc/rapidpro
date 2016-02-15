@@ -7,25 +7,26 @@
 
 
 -block extra-less
-  {% lessblock %}
-    :plain
-      .empty {
-        margin-left: 30px;
+  -compress css
+    {% lessblock %}
+      :plain
+        .empty {
+          margin-left: 30px;
 
-        .option {
-          border: 0px solid green;
-          width: 350px;
-          padding: 5px;
-          padding-top:0px;
+          .option {
+            border: 0px solid green;
+            width: 350px;
+            padding: 5px;
+            padding-top:0px;
 
-          .button {
-            margin-top: 12px;
+            .button {
+              margin-top: 12px;
+            }
+
           }
-
         }
-      }
 
-  {% endlessblock %}
+    {% endlessblock %}
 
 -block extra-script
   {{ block.super }}
@@ -120,13 +121,14 @@
     })
 
 
-  %script{src:"{{ STATIC_URL }}js/flows/app.js", type:'text/coffeescript'}
-  %script{src:"{{ STATIC_URL }}js/flows/validation.js", type:'text/coffeescript'}
-  %script{src:"{{ STATIC_URL }}js/flows/widgets.js", type:'text/coffeescript'}
-  %script{src:"{{ STATIC_URL }}js/flows/services.js", type:'text/coffeescript'}
-  %script{src:"{{ STATIC_URL }}js/flows/controllers.js", type:'text/coffeescript'}
-  %script{src:"{{ STATIC_URL }}js/flows/directives.js", type:'text/coffeescript'}
-  %script{src:"{{ STATIC_URL }}js/simulator.js", type:'text/coffeescript'}
+  -compress js
+    %script{src:"{{ STATIC_URL }}coffee/flows/app.coffee", type:'text/coffeescript'}
+    %script{src:"{{ STATIC_URL }}coffee/flows/validation.coffee", type:'text/coffeescript'}
+    %script{src:"{{ STATIC_URL }}coffee/flows/widgets.coffee", type:'text/coffeescript'}
+    %script{src:"{{ STATIC_URL }}coffee/flows/services.coffee", type:'text/coffeescript'}
+    %script{src:"{{ STATIC_URL }}coffee/flows/controllers.coffee", type:'text/coffeescript'}
+    %script{src:"{{ STATIC_URL }}coffee/flows/directives.coffee", type:'text/coffeescript'}
+    %script{src:"{{ STATIC_URL }}coffee/simulator.coffee", type:'text/coffeescript'}
 
 
   :javascript
@@ -510,5 +512,6 @@
           %textarea.msd-elastic.body.note-input{ng-model:'note.body'}
 
 -block extra-style
-  %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}css/flow_editor.css', media:'all'}
-  %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}css/simulator.css', media:'all'}
+  -compress css
+    %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}less/flow_editor.less', media:'all'}
+    %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}less/simulator.less', media:'all'}

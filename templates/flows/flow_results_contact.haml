@@ -36,191 +36,193 @@
 -block extra-less
   <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/datatables/jquery.dataTables.css">
   -load compress
-  %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}css/simulator.css', media:'all'}
+  -compress css
+    %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}less/simulator.less', media:'all'}
 
-  {% lessblock %}
-    :plain
-      .gear-menu {
-        .dropdown-menu {
-          left: -96px;
+  -compress css inline
+    {% lessblock %}
+      :plain
+        .gear-menu {
+          .dropdown-menu {
+            left: -96px;
+          }
         }
-      }
-      .gear-menu {
-        .label-menu {
-          li {
-            a {
-              padding: 8px 8px;
+        .gear-menu {
+          .label-menu {
+            li {
+              a {
+                padding: 8px 8px;
+              }
             }
           }
         }
-      }
 
-      .to {
-        a {
-          color: @flat-white;
+        .to {
+          a {
+            color: @flat-white;
+          }
         }
-      }
-      .recording {
+        .recording {
 
 
 
-        padding:1px 6px;
-        padding-left:1px;
-        display:inline-block;
-        margin-right:5px;
-        line-height:0px;
-        font-size:11px;
-
-        .text {
+          padding:1px 6px;
+          padding-left:1px;
           display:inline-block;
-          padding-left:0px;
-        }
+          margin-right:5px;
+          line-height:0px;
+          font-size:11px;
 
-        &:hover {
-          cursor:pointer;
-        }
-
-        &.playing {
-
-          .stop {
-            display:block;
-          }
-
-          .play {
-            display:none;
-          }
-        }
-      }
-
-
-      .flow-name {
-        font-size:18px;
-        margin-top:-3px;
-      }
-
-      .run-title {
-        margin-top:20px;
-        border-bottom: 1px solid #ccc;
-        .date {
-          display: inline-block;
-        }
-      }
-
-      .message {
-        font-style: italic;
-      }
-
-      .run {
-        width:300px;
-      }
-
-
-      #simulator {
-        display:inline-block;
-        position:absolute;
-        top:250px;
-        right:40px;
-
-        padding:0;
-        margin:0;
-
-        .simulator-body {
-          height: 372px;
-          margin-top:0px;
-          margin-bottom:15px;
-        }
-
-        .simulator-footer, .simulator-close, .simulator-refresh  {
-          display:none;
-        }
-
-        &.pinned-sim {
-          position:fixed;
-          top:70px;
-          right:40px;
-        }
-      }
-
-      .run-summaries {
-        margin-top:25px;
-
-        .run-summary {
-
-          .remove {
-            position:relative;
-            margin-left:-25px;
-            margin-top:-5px;
-            float:left;
-          }
-
-          border: 1px solid #fff;
-          cursor: pointer;
-          margin-top:5px;
-          padding:20px;
-          padding-left:40px;
-          padding-right:40px;
-          color: #888;
-
-          &.selected {
-            border: 1px solid @flat-mutedblue - #111;
-            color: @flat-mutedblue - #111;
-            .remove {
-              display:inline-block;
-            }
+          .text {
+            display:inline-block;
+            padding-left:0px;
           }
 
           &:hover {
-            color: @flat-mutedblue - #111;
-
+            cursor:pointer;
           }
 
-          .started {
-            display:inline-block;
-          }
+          &.playing {
 
-          .ended {
-            display:inline-block;
-          }
+            .stop {
+              display:block;
+            }
 
-          .messages {
-            display:inline-block;
-            float:right;
-            margin-top:-6px;
-          }
-
-          .active {
-            display:inline-block;
-          }
-
-          .most-recent {
-            font-style: italic;
-            font-size:12px;
-            line-height:15px;
-            margin-top:5px;
-
-            .title {
-              font-style: normal;
-              margin-right:5px;
+            .play {
+              display:none;
             }
           }
         }
-      }
 
-      .run-messages {
-        padding-bottom:400px;
 
-        .empty {
+        .flow-name {
+          font-size:18px;
+          margin-top:-3px;
+        }
+
+        .run-title {
+          margin-top:20px;
+          border-bottom: 1px solid #ccc;
+          .date {
+            display: inline-block;
+          }
+        }
+
+        .message {
           font-style: italic;
         }
-      }
 
-      .attn {
-        font-weight:bold;
-      }
-
+        .run {
+          width:300px;
+        }
 
 
-  {% endlessblock %}
+        #simulator {
+          display:inline-block;
+          position:absolute;
+          top:250px;
+          right:40px;
+
+          padding:0;
+          margin:0;
+
+          .simulator-body {
+            height: 372px;
+            margin-top:0px;
+            margin-bottom:15px;
+          }
+
+          .simulator-footer, .simulator-close, .simulator-refresh  {
+            display:none;
+          }
+
+          &.pinned-sim {
+            position:fixed;
+            top:70px;
+            right:40px;
+          }
+        }
+
+        .run-summaries {
+          margin-top:25px;
+
+          .run-summary {
+
+            .remove {
+              position:relative;
+              margin-left:-25px;
+              margin-top:-5px;
+              float:left;
+            }
+
+            border: 1px solid #fff;
+            cursor: pointer;
+            margin-top:5px;
+            padding:20px;
+            padding-left:40px;
+            padding-right:40px;
+            color: #888;
+
+            &.selected {
+              border: 1px solid @flat-mutedblue - #111;
+              color: @flat-mutedblue - #111;
+              .remove {
+                display:inline-block;
+              }
+            }
+
+            &:hover {
+              color: @flat-mutedblue - #111;
+
+            }
+
+            .started {
+              display:inline-block;
+            }
+
+            .ended {
+              display:inline-block;
+            }
+
+            .messages {
+              display:inline-block;
+              float:right;
+              margin-top:-6px;
+            }
+
+            .active {
+              display:inline-block;
+            }
+
+            .most-recent {
+              font-style: italic;
+              font-size:12px;
+              line-height:15px;
+              margin-top:5px;
+
+              .title {
+                font-style: normal;
+                margin-right:5px;
+              }
+            }
+          }
+        }
+
+        .run-messages {
+          padding-bottom:400px;
+
+          .empty {
+            font-style: italic;
+          }
+        }
+
+        .attn {
+          font-weight:bold;
+        }
+
+
+
+    {% endlessblock %}
 
 -block extra-script
   {{block.super}}

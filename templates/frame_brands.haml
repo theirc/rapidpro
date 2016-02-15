@@ -4,28 +4,30 @@
 # of our styles for all the brands that will share a site.
 
 -with brand=brands.brand1
-  %link{type:'text/css', rel:'stylesheet', href:"{{STATIC_URL}}fonts/temba/style.css", media:'all'}
-  %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}css/style.css', media:'all'}
-  %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}css/formax.css', media:'all'}
-  %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}css/print.css', media:'print'}
+  -compress css
+    %link{type:'text/css', rel:'stylesheet', href:"{{STATIC_URL}}fonts/temba/style.css", media:'all'}
+    %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}less/style.less', media:'all'}
+    %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}less/formax.less', media:'all'}
+    %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}less/print.less', media:'print'}
 
-  // custom branding
-  -for style in brand.styles
-    -if 'less' in style
-      %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}{{style}}', media:'all'}
-    -else
-      %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}{{style}}", media:'all'}
+    // custom branding
+    -for style in brand.styles
+      -if 'less' in style
+        %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}{{style}}', media:'all'}
+      -else
+        %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}{{style}}", media:'all'}
 
 
 -with brand=brands.brand2
-  %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}fonts/temba/style.css", media:'all'}
-  %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}css/style.css', media:'all'}
-  %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}css/formax.css', media:'all'}
-  %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}css/print.css', media:'print'}
+  -compress css
+    %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}fonts/temba/style.css", media:'all'}
+    %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}less/style.less', media:'all'}
+    %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}less/formax.less', media:'all'}
+    %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}less/print.less', media:'print'}
 
-  // custom branding
-  -for style in brand.styles
-    -if 'less' in style
-      %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}{{style}}', media:'all'}
-    -else
-      %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}{{style}}", media:'all'}
+    // custom branding
+    -for style in brand.styles
+      -if 'less' in style
+        %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}{{style}}', media:'all'}
+      -else
+        %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}{{style}}", media:'all'}

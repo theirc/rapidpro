@@ -555,53 +555,54 @@
 
 
 -block extra-less
-  {% lessblock %}
-    :plain
+  -compress css inline
+    {% lessblock %}
+      :plain
 
-      .channel-options {
-        h3 {
-          margin-top: 30px;
-        }
-      }
-
-      .checking-recommendations {
-        margin-bottom:10px;
-      }
-
-      .recommended {
-        .btn-primary {
-          background: @flat-mutedgreen;
-          border-color: @flat-mutedgreen - #111;
-        }
-
-        .claim-description {
-
-        }
-
-        .recommendation {
+        .channel-options {
           h3 {
-            margin-top: 0px;
-          }
-
-          display:inline-block;
-          padding:5px;
-          margin-top: 5px;
-          margin-bottom:10px;
-          display:inline-block;
-          .icon-star-2 {
-            color: @flat-darkwhite - #222;
-            font-size:22px;
-            float:left;
-            position:relative;
-            top: -3px;
-            margin-right:16px;
-
-
+            margin-top: 30px;
           }
         }
 
-      }
-  {% endlessblock %}
+        .checking-recommendations {
+          margin-bottom:10px;
+        }
+
+        .recommended {
+          .btn-primary {
+            background: @flat-mutedgreen;
+            border-color: @flat-mutedgreen - #111;
+          }
+
+          .claim-description {
+
+          }
+
+          .recommendation {
+            h3 {
+              margin-top: 0px;
+            }
+
+            display:inline-block;
+            padding:5px;
+            margin-top: 5px;
+            margin-bottom:10px;
+            display:inline-block;
+            .icon-star-2 {
+              color: @flat-darkwhite - #222;
+              font-size:22px;
+              float:left;
+              position:relative;
+              top: -3px;
+              margin-right:16px;
+
+
+            }
+          }
+
+        }
+    {% endlessblock %}
 
 
 -block extra-style

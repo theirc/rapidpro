@@ -252,91 +252,92 @@
 -block extra-less
   <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/datatables/jquery.dataTables.css">
 
-  {% lessblock %}
-    :plain
+  -compress css inline
+    {% lessblock %}
+      :plain
 
-      #top-charts {
-        height: 240px;
-        overflow-y: hidden;
-      }
+        #top-charts {
+          height: 240px;
+          overflow-y: hidden;
+        }
 
-      #more-link {
-        position:absolute;
-        margin-top:15px;
-        float:left;
-        display:none;
-        z-index:1500;
-      }
+        #more-link {
+          position:absolute;
+          margin-top:15px;
+          float:left;
+          display:none;
+          z-index:1500;
+        }
 
-      .dataTables_processing {
-        z-index: 1000;
-      }
+        .dataTables_processing {
+          z-index: 1000;
+        }
 
-      .dataTables_filter {
-        margin-top:10px;
-        input {
+        .dataTables_filter {
+          margin-top:10px;
+          input {
+            margin-bottom:20px;
+            width: 200px;
+          }
+        }
+
+        .table-options {
+          padding: 10px 0;
+          cursor: pointer;
+        }
+
+        #column-options {
+          padding: 20px 0px;
+        }
+
+        .dataTables_scroll {
           margin-bottom:20px;
-          width: 200px;
+          border-bottom: 1px solid #666;
         }
-      }
 
-      .table-options {
-        padding: 10px 0;
-        cursor: pointer;
-      }
+        @table-color: #DDEBFC;
 
-      #column-options {
-        padding: 20px 0px;
-      }
+        table.dataTable  {
 
-      .dataTables_scroll {
-        margin-bottom:20px;
-        border-bottom: 1px solid #666;
-      }
+          tr.odd {
+            background: @table-color;
+            td.sorting_1 {
+              background: @table-color - #111
+            }
+          }
 
-      @table-color: #DDEBFC;
-
-      table.dataTable  {
-
-        tr.odd {
-          background: @table-color;
-          td.sorting_1 {
-            background: @table-color - #111
+          tr.even {
+            background: #fff;
+            td.sorting_1 {
+              background: @table-color + #070707
+            }
           }
         }
 
-        tr.even {
-          background: #fff;
-          td.sorting_1 {
-            background: @table-color + #070707
+        #table-gutter {
+          margin-top:60px;
+          padding-left: 20px;
+          padding-right: 20px;
+          background: #f9f9f9;
+        }
+
+        .inline-chart {
+          margin-top:10px;
+          display:inline-block;
+          width:380px;
+          border: 0px solid @flat-mutedblue;
+          .render {
+            height:200px;
+            width:350px;
+          }
+          .name {
+            width: 350px;
+            text-align:center;
+            color: @flat-grey;
           }
         }
-      }
 
-      #table-gutter {
-        margin-top:60px;
-        padding-left: 20px;
-        padding-right: 20px;
-        background: #f9f9f9;
-      }
-
-      .inline-chart {
-        margin-top:10px;
-        display:inline-block;
-        width:380px;
-        border: 0px solid @flat-mutedblue;
-        .render {
-          height:200px;
-          width:350px;
-        }
-        .name {
-          width: 350px;
-          text-align:center;
-          color: @flat-grey;
-        }
-      }
-
-  {% endlessblock %}
+    {% endlessblock %}
 
 -block extra-style
   {{ block.super }}

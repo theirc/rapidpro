@@ -187,7 +187,8 @@
 -block extra-style
   {{ block.super }}
   %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}leaflet-0.7.3/leaflet.css", media:'all'}
-  %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}css/analytics.css', media:'all'}
+  -compress css
+    %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}less/analytics.less', media:'all'}
 
   :css
     .field-loading {
@@ -201,14 +202,15 @@
 -block extra-script
   {{ block.super }}
   <script src="{{ STATIC_URL }}js/highcharts.js"></script>
-  <script src="{{ STATIC_URL }}js/highcharts-theme.js?v=2"></script>
+  <script src="{{ STATIC_URL }}/js/highcharts-theme.js?v=2"></script>
 
-  :javascript
-    var app = angular.module("analytics", ['ui.sortable']);
-    app.config(function($interpolateProvider) {
-      $interpolateProvider.startSymbol("[[")
-      $interpolateProvider.endSymbol("]]")
-    });
+  -compress js
+    :javascript
+      var app = angular.module("analytics", ['ui.sortable']);
+      app.config(function($interpolateProvider) {
+        $interpolateProvider.startSymbol("[[")
+        $interpolateProvider.endSymbol("]]")
+      });
 
   :javascript
     var saveReportURL = '{% url "reports.report_create" %}';
@@ -224,5 +226,6 @@
   %script{src:"{{ STATIC_URL }}leaflet-0.7.3/leaflet.js"}
   %script{src:"{{ STATIC_URL }}angular-ui/sortable-0.13.0.js"}
 
-  %script{type:'text/coffeescript', charset:'utf-8', src:'{{ STATIC_URL }}js/analytics.js'}
-  %script{type:'text/coffeescript', charset:'utf-8', src:'{{ STATIC_URL }}js/choropleth.js'}
+  -compress js
+    %script{type:'text/coffeescript', charset:'utf-8', src:'{{ STATIC_URL }}coffee/analytics.coffee'}
+    %script{type:'text/coffeescript', charset:'utf-8', src:'{{ STATIC_URL }}coffee/choropleth.coffee'}

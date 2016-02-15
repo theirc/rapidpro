@@ -18,18 +18,20 @@
   %script{src:"{{ STATIC_URL }}js/angular.min.js"}
   %script{src:"{{ STATIC_URL }}js/angular-ui.min.js"}
 
-  :javascript
-    app = angular.module("map", ["ui"])
-    app.config = function($interpolateProvider) {
-      $interpolateProvider.startSymbol("[[")
-      $interpolateProvider.endSymbol("]]")
-    }
-  %script{src:"{{ STATIC_URL }}js/choropleth.js", type:'text/coffeescript'}
+  -compress js
+    :javascript
+      app = angular.module("map", ["ui"])
+      app.config = function($interpolateProvider) {
+        $interpolateProvider.startSymbol("[[")
+        $interpolateProvider.endSymbol("]]")
+      }
+    %script{src:"{{ STATIC_URL }}coffee/choropleth.coffee", type:'text/coffeescript'}
 
 -block extra-style
   {{ block.super }}
   %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}leaflet-0.7.2/leaflet.css", media:'all'}
-  %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}css/analytics.css', media:'all'}
+  -compress css
+    %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}less/analytics.less', media:'all'}
 
   :css
     #map {

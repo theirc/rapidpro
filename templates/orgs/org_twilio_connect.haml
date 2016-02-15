@@ -26,30 +26,31 @@
     });
 
 -block extra-less
-  {% lessblock %}
-    :plain
-      .connect-help {
-        margin-bottom: 25px;
-        width: 600;
-      }
-
-      .form-horizontal {
-
-        .control-label {
-          display:none;
+  -compress css inline
+    {% lessblock %}
+      :plain
+        .connect-help {
+          margin-bottom: 25px;
+          width: 600;
         }
 
-        .controls {
-          margin-left: 0px;
+        .form-horizontal {
+
+          .control-label {
+            display:none;
+          }
+
+          .controls {
+            margin-left: 0px;
+          }
+
+          .form-actions {
+            padding-left: 0px
+          }
         }
 
-        .form-actions {
-          padding-left: 0px
+        a:hover {
+          text-decoration: none;
         }
-      }
 
-      a:hover {
-        text-decoration: none;
-      }
-
-  {% endlessblock %}
+    {% endlessblock %}

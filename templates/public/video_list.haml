@@ -12,80 +12,81 @@
     Start building SMS applications by watching these short two minutes videos on various {{ brand }} features.
 
 -block extra-less
-  {% lessblock %}
-    :plain
+  -compress css
+    {% lessblock %}
+      :plain
 
-      .manage {
-        position: absolute;
-        right:10px;
-        margin-top:-40px;
-      }
-
-
-      p.instructions {
-        margin-bottom:0px;
-        width:100%;
-        margin-top:15px;
-        font-size:19px;
-        line-height:24px;
-
-      }
-
-      .video {
-
-        h3 {
-          border-bottom: 1px solid #ddd;
-          margin-top:40px;
+        .manage {
+          position: absolute;
+          right:10px;
+          margin-top:-40px;
         }
 
-        vertical-align:top;
 
-        iframe {
-          display: inline-block;
-          width:600;
-          vertical-align:top;
-          border: 1px solid #f3f3f3;
+        p.instructions {
+          margin-bottom:0px;
+          width:100%;
           margin-top:15px;
-        }
-
-        .description {
-          display: inline-block;
-          width:340px;
-          vertical-align:top;
-          font-size:20px;
+          font-size:19px;
           line-height:24px;
-          margin-left:25px;
-          color: #999;
+
         }
 
-        .summary {
-          padding-top:15px;
-          white-space:pre-line;
+        .video {
+
+          h3 {
+            border-bottom: 1px solid #ddd;
+            margin-top:40px;
+          }
+
+          vertical-align:top;
+
+          iframe {
+            display: inline-block;
+            width:600;
+            vertical-align:top;
+            border: 1px solid #f3f3f3;
+            margin-top:15px;
+          }
+
+          .description {
+            display: inline-block;
+            width:340px;
+            vertical-align:top;
+            font-size:20px;
+            line-height:24px;
+            margin-left:25px;
+            color: #999;
+          }
+
+          .summary {
+            padding-top:15px;
+            white-space:pre-line;
+          }
+
+          .more {
+            font-size:14px;
+          }
+
         }
 
-        .more {
-          font-size:14px;
+        .start-link {
+           font-size: 30px;
+           line-height: 40px;
+           padding: 10px;
+           display: block;
+           background-color: blue;
+           color: #fff;
+           text-decoration:none;
         }
 
-      }
+        .start-cell {
+          margin: 20px 0px 30px 0px;
+          text-align: center;
 
-      .start-link {
-         font-size: 30px;
-         line-height: 40px;
-         padding: 10px;
-         display: block;
-         background-color: blue;
-         color: #fff;
-         text-decoration:none;
-      }
+        }
 
-      .start-cell {
-        margin: 20px 0px 30px 0px;
-        text-align: center;
-
-      }
-
-  {% endlessblock %}
+    {% endlessblock %}
 
 -block title
 

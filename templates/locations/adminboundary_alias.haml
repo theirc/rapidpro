@@ -1,6 +1,6 @@
 -extends "smartmin/read.haml"
 
--load i18n
+-load compress i18n
 
 -block html-tag
   <html lang="en" ng-app="locations">
@@ -225,4 +225,5 @@
   %script{src:"{{ STATIC_URL }}leaflet-0.7.2/leaflet.js"}
   %script{type:"text/javascript", src:"{{ STATIC_URL }}/js/elastic.js"}
 
-  %script{src:"{{ STATIC_URL }}js/leaflet.js", type:'text/coffeescript'}
+  -compress js
+    %script{src:"{{ STATIC_URL }}coffee/leaflet.coffee", type:'text/coffeescript'}

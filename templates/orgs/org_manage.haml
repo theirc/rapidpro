@@ -5,75 +5,76 @@
 
 -block extra-less
   {{block.super}}
-  {% lessblock %}
-    :plain
-      .service {
-        margin-top:5px;
-      }
-
-      .num-credits {
-        text-align:right;
-        font-size:22px;
-        font-weight:100;
-      }
-
-      .used-pct {
-        text-align:right;
-        font-size:18px;
-        color: #aaa;
-        &.used-warning {
-          color: @flat-mutedorange;
+  -compress css
+    {% lessblock %}
+      :plain
+        .service {
+          margin-top:5px;
         }
 
-        &.used-alert {
-          color: @flat-mutedred;
+        .num-credits {
+          text-align:right;
+          font-size:22px;
+          font-weight:100;
         }
-      }
 
-      .table td {
-        vertical-align:middle
-      }
+        .used-pct {
+          text-align:right;
+          font-size:18px;
+          color: #aaa;
+          &.used-warning {
+            color: @flat-mutedorange;
+          }
 
-      .value-owner {
-        width:280px;
-      }
+          &.used-alert {
+            color: @flat-mutedred;
+          }
+        }
 
-      .owner {
-        display:inline;
-      }
+        .table td {
+          vertical-align:middle
+        }
 
-      .service {
-        float:right;
-        width: 50px;
-        margin-right:20px;
-      }
+        .value-owner {
+          width:280px;
+        }
 
-      .owner-email {
-        font-size:11px;
-        line-height:11px;
+        .owner {
+          display:inline;
+        }
 
-      }
+        .service {
+          float:right;
+          width: 50px;
+          margin-right:20px;
+        }
 
-      .owner-name {
-      }
+        .owner-email {
+          font-size:11px;
+          line-height:11px;
 
-      .org-timezone {
-        font-size: 11px;
-        line-height:11px;
-      }
+        }
 
-      .quick {
-        padding: 5px;
-      }
+        .owner-name {
+        }
 
-      .quick-searches {
-        margin-bottom: 20px;
-        background: @flat-white + #090909;
-        padding:10px;
-        .rounded-corners(5px);
-      }
+        .org-timezone {
+          font-size: 11px;
+          line-height:11px;
+        }
 
-  {% endlessblock %}
+        .quick {
+          padding: 5px;
+        }
+
+        .quick-searches {
+          margin-bottom: 20px;
+          background: @flat-white + #090909;
+          padding:10px;
+          .rounded-corners(5px);
+        }
+
+    {% endlessblock %}
 
 -block extra-script
   {{block.super}}

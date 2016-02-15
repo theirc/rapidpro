@@ -176,28 +176,29 @@
 
 
 -block extra-less
-  {% lessblock %}
-    :plain
-      .workflow-btn {
-        padding: 4px 10px;
-      }
-      .workflow-section {
-        margin-top: 30px;
-        margin-bottom: 30px;
-      }
-      .medium-title {
-        color: @color-font-grey;
-        font-weight: 100;
-        font-size: 21px;
-      }
-      .workflow-glyph {
-        line-height: 1;
-        color: @flat-blue;
-        font-size: 200px;
-        height: 220px;
-        text-decoration: none;
-      }
-      a.workflow-glyph {
-        text-decoration: none;
-      }
-  {% endlessblock %}
+  -compress css inline
+    {% lessblock %}
+      :plain
+        .workflow-btn {
+          padding: 4px 10px;
+        }
+        .workflow-section {
+          margin-top: 30px;
+          margin-bottom: 30px;
+        }
+        .medium-title {
+          color: @color-font-grey;
+          font-weight: 100;
+          font-size: 21px;
+        }
+        .workflow-glyph {
+          line-height: 1;
+          color: @flat-blue;
+          font-size: 200px;
+          height: 220px;
+          text-decoration: none;
+        }
+        a.workflow-glyph {
+          text-decoration: none;
+        }
+    {% endlessblock %}

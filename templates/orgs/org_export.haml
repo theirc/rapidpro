@@ -37,80 +37,81 @@
 
 
 -block extra-less
-  {% lessblock %}
-    :plain
+  -compress css
+    {% lessblock %}
+      :plain
 
-      .select-section {
-        margin-top: -80px;
-        margin-right: -20px;
-      }
-
-      h3 {
-        margin-top:30px;
-      }
-
-      .exportables {
-        border-top: 1px solid #ccc;
-        padding:0px 20px;
-        .exportable {
-          vertical-align:top;
-          width: 350px;
-          display:inline-block;
-          padding-left:23px;
-          margin-bottom:10px;
+        .select-section {
+          margin-top: -80px;
+          margin-right: -20px;
         }
 
-        h4 {
-          font-size:13px;
-          font-weight:500;
-          color: #999;
-          padding-top:10px;
+        h3 {
+          margin-top:30px;
         }
 
-        input[type=checkbox] {
-          display: inline-block;
-          margin-top:3px;
-          margin-right: 5px;
-          vertical-align:top;
+        .exportables {
+          border-top: 1px solid #ccc;
+          padding:0px 20px;
+          .exportable {
+            vertical-align:top;
+            width: 350px;
+            display:inline-block;
+            padding-left:23px;
+            margin-bottom:10px;
+          }
 
+          h4 {
+            font-size:13px;
+            font-weight:500;
+            color: #999;
+            padding-top:10px;
+          }
+
+          input[type=checkbox] {
+            display: inline-block;
+            margin-top:3px;
+            margin-right: 5px;
+            vertical-align:top;
+
+          }
+
+          label {
+            display: inline-block;
+            width: 290px;
+          }
+
+          .icon {
+
+          }
         }
 
-        label {
-          display: inline-block;
-          width: 290px;
-        }
-
-        .icon {
-
-        }
-      }
 
 
+        .dependencies {
+          color: @flat-darkwhite - #222;
+          margin-left: 25px;
+          font-size:12px;
 
-      .dependencies {
-        color: @flat-darkwhite - #222;
-        margin-left: 25px;
-        font-size:12px;
+          p {
+            display: inline;
+            font-weight: 500;
+            margin: 0;
+            padding: 0;
+          }
 
-        p {
-          display: inline;
-          font-weight: 500;
-          margin: 0;
-          padding: 0;
-        }
+          .icon {
 
-        .icon {
+          }
+
+          .list {
+            display: inline;
+            margin-right: 2px;
+            margin-left: 2px;
+          }
 
         }
-
-        .list {
-          display: inline;
-          margin-right: 2px;
-          margin-left: 2px;
-        }
-
-      }
-  {% endlessblock %}
+    {% endlessblock %}
 
 -block page-top
   -if not archived

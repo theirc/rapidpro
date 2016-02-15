@@ -54,34 +54,36 @@
     -# this view make it possible to process translations from javascript land
     <script src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
 
-    :javascript
-       var static_url = '{{STATIC_URL}}';
+    -compress js
+      :javascript
+         var static_url = '{{STATIC_URL}}';
 
-    %script{src:"{{ STATIC_URL }}js/select2.js"}
-    %script{src:"{{ STATIC_URL }}scripts/bootstrap/js/bootstrap.js"}
-    %script{src:"{{ STATIC_URL }}js/jquery.pjax.js"}
-    %script{src:"{{ STATIC_URL }}js/jquery-ui-1.10.2.custom.min.js"}
-    %script{src:"{{ STATIC_URL }}js/jquery.sparkline.js"}
-    %script{src:"{{ STATIC_URL }}js/jquery.history.js"}
-    %script{src:"{{ STATIC_URL }}js/jquery.easing.1.3.js"}
-    %script{src:"{{ STATIC_URL }}js/jquery.hoverIntent.js"}
-    %script{src:"{{ STATIC_URL }}js/bootstrap-limit.js"}
-    %script{src:"{{ STATIC_URL }}js/heavy_data.js"}
-    %script{src:"{{ STATIC_URL }}js/moment.js"}
-    %script{src:"{{ STATIC_URL }}js/moment-timezone.js"}
-    %script{src:"{{ STATIC_URL }}js/jquery-ui-timepicker-addon.js"}
-    %script{src:"{{ STATIC_URL }}js/uuid.js"}
+      %script{src:"{{ STATIC_URL }}js/select2.js"}
+      %script{src:"{{ STATIC_URL }}scripts/bootstrap/js/bootstrap.js"}
+      %script{src:"{{ STATIC_URL }}js/jquery.pjax.js"}
+      %script{src:"{{ STATIC_URL }}js/jquery-ui-1.10.2.custom.min.js"}
+      %script{src:"{{ STATIC_URL }}js/jquery.sparkline.js"}
+      %script{src:"{{ STATIC_URL }}js/jquery.history.js"}
+      %script{src:"{{ STATIC_URL }}js/jquery.easing.1.3.js"}
+      %script{src:"{{ STATIC_URL }}js/jquery.hoverIntent.js"}
+      %script{src:"{{ STATIC_URL }}js/bootstrap-limit.js"}
+      %script{src:"{{ STATIC_URL }}js/heavy_data.js"}
+      %script{src:"{{ STATIC_URL }}js/moment.js"}
+      %script{src:"{{ STATIC_URL }}js/moment-timezone.js"}
+      %script{src:"{{ STATIC_URL }}js/jquery-ui-timepicker-addon.js"}
+      %script{src:"{{ STATIC_URL }}js/uuid.js"}
 
-    -if not debug and not testing
-      %script{src:"{{ STATIC_URL }}js/raven.min.js"}
+      -if not debug and not testing
+        %script{src:"{{ STATIC_URL }}js/raven.min.js"}
 
-    %script{src:"{{ STATIC_URL }}js/omnibox.js"}
-    %script{src:"{{ STATIC_URL }}js/temba.js"}
-    %script{src:"{{ STATIC_URL }}js/excellent.js"}
-    %script{src:"{{ STATIC_URL }}js/temba.js", type:'text/coffeescript'}
-    %script{src:"{{ STATIC_URL }}js/formax.js", type:'text/coffeescript'}
-    %script{src:"{{ STATIC_URL }}js/completions.js", type:'text/coffeescript'}
-    %script{src:"{{ STATIC_URL }}js/labels.js"}
+    -compress js
+      %script{src:"{{ STATIC_URL }}js/omnibox.js"}
+      %script{src:"{{ STATIC_URL }}js/temba.js"}
+      %script{src:"{{ STATIC_URL }}js/excellent.js"}
+      %script{src:"{{ STATIC_URL }}coffee/temba.coffee", type:'text/coffeescript'}
+      %script{src:"{{ STATIC_URL }}coffee/formax.coffee", type:'text/coffeescript'}
+      %script{src:"{{ STATIC_URL }}coffee/completions.coffee", type:'text/coffeescript'}
+      %script{src:"{{ STATIC_URL }}js/labels.js"}
 
     -include "includes/frame_top.html"
 
@@ -94,23 +96,30 @@
     -load i18n
 
     -block styles
-      %link{type:'text/css', rel:'stylesheet', href:'{{ STATIC_URL }}css/bootstrap.css',  media:'all' }
-      %link{type:'text/css', rel:'stylesheet', href:'{{ STATIC_URL }}css/animate.css',  media:'all' }
-      %link{type:'text/css', rel:'stylesheet', href:'{{ STATIC_URL }}css/bootstrap-responsive.css',
-            media:'all and (min-width: 1200px), all and (max-width: 767px), all and (max-width: 480px), all and (min-width: 980px)' }
-      %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}css/select2.css", media:'all'}
-      %link{type:'text/css', rel:'stylesheet', href:'{{ STATIC_URL }}css/jquery.atwho.css', media:'all'}
-      %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}css/redmond/jquery-ui-1.10.2.custom.min.css", media:'all'}
-      %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}fonts/temba/style.css", media:'all'}
-      %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}css/style.css', media:'all'}
-      %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}css/formax.css', media:'all'}
-      %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}css/print.css', media:'print'}
-      // custom branding
-      -for style in brand.styles
-        -if 'less' in style
-          %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}{{style}}', media:'all'}
-        -else
-          %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}{{style}}", media:'all'}
+      -compress css
+        %link{type:'text/css', rel:'stylesheet', href:'{{ STATIC_URL }}css/bootstrap.css',  media:'all' }
+        %link{type:'text/css', rel:'stylesheet', href:'{{ STATIC_URL }}css/animate.css',  media:'all' }
+
+      -compress css
+        %link{type:'text/css', rel:'stylesheet', href:'{{ STATIC_URL }}css/bootstrap-responsive.css',
+              media:'all and (min-width: 1200px), all and (max-width: 767px), all and (max-width: 480px), all and (min-width: 980px)' }
+
+      -compress css
+        %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}css/select2.css", media:'all'}
+        %link{type:'text/css', rel:'stylesheet', href:'{{ STATIC_URL }}css/jquery.atwho.css', media:'all'}
+        %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}css/redmond/jquery-ui-1.10.2.custom.min.css", media:'all'}
+
+      -compress css
+        %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}fonts/temba/style.css", media:'all'}
+        %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}less/style.less', media:'all'}
+        %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}less/formax.less', media:'all'}
+        %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}less/print.less', media:'print'}
+        // custom branding
+        -for style in brand.styles
+          -if 'less' in style
+            %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}{{style}}', media:'all'}
+          -else
+            %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}{{style}}", media:'all'}
 
 
       -block extra-less
