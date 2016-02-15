@@ -128,15 +128,15 @@ DEFAULT_FILE_STORAGE = 'temba.storage.MediaStorage'
 COMPRESS_URL = STATIC_URL
 COMPRESS_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 STATICFILES_STORAGE = COMPRESS_STORAGE
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 TEMPLATE_CONTEXT_PROCESSORS += ('temba.tests.add_testing_flag_to_context', )
 
 
 COMPRESS_ENABLED = True
-COMPRESS_OFFLINE = True
 
+COMPRESS_STORAGE = STATICFILES_STORAGE = "temba.storage.CachedS3BotoStorage"
 # Hack to have the compressor run offline
 # COMPRESS_URL = STATIC_URL = "/static/"
 # uncomment the line above. Run collect static and recomment it
