@@ -136,103 +136,102 @@
     });
 
 -block extra-less
-  -compress css inline
-    {% lessblock %}
-      :plain
-        .numbers-title {
-          font-weight: 600;
-        }
+  {% lessblock %}
+    :plain
+      .numbers-title {
+        font-weight: 600;
+      }
 
-        #account-numbers {
-          margin-top: 20px;
-        }
+      #account-numbers {
+        margin-top: 20px;
+      }
 
-        .country {
-          display:inline-block;
-        }
+      .country {
+        display:inline-block;
+      }
 
-        .area-code {
-          display:inline-block;
-          margin-left:15px;
-        }
+      .area-code {
+        display:inline-block;
+        margin-left:15px;
+      }
 
 
-        .country-label {
-         display:block;
-         margin-bottom:7px;
-        }
+      .country-label {
+       display:block;
+       margin-bottom:7px;
+      }
 
-        .area-label {
-          margin-bottom:7px;
-        }
+      .area-label {
+        margin-bottom:7px;
+      }
 
-        #area-code {
-          width: 50px;
-          margin-bottom: 0px;
-          text-align: center;
-          margin-right:15px;
-        }
+      #area-code {
+        width: 50px;
+        margin-bottom: 0px;
+        text-align: center;
+        margin-right:15px;
+      }
 
-        .phone-number,
-        .unsupported-phone-number {
-          display: inline-block;
-          font-size: 16px;
-          padding: 8px;
-          border: 1px solid #ccc;
-          margin: 5px;
-        }
+      .phone-number,
+      .unsupported-phone-number {
+        display: inline-block;
+        font-size: 16px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        margin: 5px;
+      }
 
-        .unsupported-phone-number {
-          background: #ccc;
-        }
+      .unsupported-phone-number {
+        background: #ccc;
+      }
 
-        .support-status {
-          font-size: 10px;
-          line-height: 10px;
-        }
+      .support-status {
+        font-size: 10px;
+        line-height: 10px;
+      }
 
-        .error {
-          padding: 5px;
-        }
+      .error {
+        padding: 5px;
+      }
 
-        .phone-number:hover {
-          border: 1px solid #237ab3;
-          background-color: #2980b9;
-          background-image: -webkit-linear-gradient(top, #2980b9, #1970a9);
-          background: -moz-linear-gradient(top, #2980b9, #1970a9);
-          color: #ffffff;
-          cursor: pointer;
-        }
+      .phone-number:hover {
+        border: 1px solid #237ab3;
+        background-color: #2980b9;
+        background-image: -webkit-linear-gradient(top, #2980b9, #1970a9);
+        background: -moz-linear-gradient(top, #2980b9, #1970a9);
+        color: #ffffff;
+        cursor: pointer;
+      }
 
-        .unsupported-phone-number:hover {
-          cursor: default;
-        }
+      .unsupported-phone-number:hover {
+        cursor: default;
+      }
 
-        .unsupported-phone-number:hover > .support-status {
-          color: red;
-        }
+      .unsupported-phone-number:hover > .support-status {
+        color: red;
+      }
 
-        #search-form {
-          display: block;
-          margin-top:20px;
-          padding-bottom:10px;
-        }
+      #search-form {
+        display: block;
+        margin-top:20px;
+        padding-bottom:10px;
+      }
 
-        .title-icon .glyph {
-          font-size: 45px;
-          margin-top: 25px;
-        }
+      .title-icon .glyph {
+        font-size: 45px;
+        margin-top: 25px;
+      }
 
-        .title-icon + .title-text {
-          margin-left: 55px;
-        }
+      .title-icon + .title-text {
+        margin-left: 55px;
+      }
 
-        .account-trial-warning {
-          font-size: 16px;
-          max-width: 525px;
-          padding: 5px;
-          margin: 10px 0px;
-          background-color: @color-alert-warning;
-        }
+      .account-trial-warning {
+        font-size: 16px;
+        max-width: 525px;
+        padding: 5px;
+        margin: 10px 0px;
+        background-color: @color-alert-warning;
+      }
 
-    {% endlessblock %}
+  {% endlessblock %}

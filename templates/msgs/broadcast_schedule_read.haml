@@ -49,38 +49,37 @@
   {{block.super}}
 
 -block extra-less
-  -compress css inline
-    {% lessblock %}
-      :plain
-        h2 {
-          margin-bottom:30px;
-        }
+  {% lessblock %}
+    :plain
+      h2 {
+        margin-bottom:30px;
+      }
 
-        .list-table {
-          margin-top:0;
-        }
+      .list-table {
+        margin-top:0;
+      }
 
-        ul {
-          list-style: none;
-        }
+      ul {
+        list-style: none;
+      }
 
-        li {
-          padding: 5px 0px;
-        }
+      li {
+        padding: 5px 0px;
+      }
 
-        .schedule-detail {
-          font-size: 16px;
+      .schedule-detail {
+        font-size: 16px;
 
-          a {
-            text-decoration: none;
-          }
+        a {
+          text-decoration: none;
         }
+      }
 
-        .sends-to {
-          margin-left: 20px;
-        }
+      .sends-to {
+        margin-left: 20px;
+      }
 
-        .value-icon {
-          display:none;
-        }
-    {% endlessblock %}
+      .value-icon {
+        display:none;
+      }
+  {% endlessblock %}

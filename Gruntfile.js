@@ -1,5 +1,6 @@
 module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-coffee');
+    grunt.loadNpmTasks('grunt-contrib-less');
 
     var coffeeTask = {
         expand: true,
@@ -13,10 +14,19 @@ module.exports = function (grunt) {
         coffee: {
             compile: {
                 expand: true,
-                flatten: true,
-                cwd: __dirname + "/static/",
+                cwd: __dirname + "/static/coffee/",
                 src: ['**/*.coffee'],
-                dest: __dirname + '/static/',
+                dest: __dirname + '/static/js/',
+                ext: '.js'
+            }
+        },
+
+        less: {
+            compile: {
+                expand: true,
+                cwd: __dirname + "/static/less/",
+                src: ['**/*.less'],
+                dest: __dirname + '/static/css/',
                 ext: '.js'
             }
         }

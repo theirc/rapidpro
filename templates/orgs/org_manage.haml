@@ -5,76 +5,75 @@
 
 -block extra-less
   {{block.super}}
-  -compress css
-    {% lessblock %}
-      :plain
-        .service {
-          margin-top:5px;
+  {% lessblock %}
+    :plain
+      .service {
+        margin-top:5px;
+      }
+
+      .num-credits {
+        text-align:right;
+        font-size:22px;
+        font-weight:100;
+      }
+
+      .used-pct {
+        text-align:right;
+        font-size:18px;
+        color: #aaa;
+        &.used-warning {
+          color: @flat-mutedorange;
         }
 
-        .num-credits {
-          text-align:right;
-          font-size:22px;
-          font-weight:100;
+        &.used-alert {
+          color: @flat-mutedred;
         }
+      }
 
-        .used-pct {
-          text-align:right;
-          font-size:18px;
-          color: #aaa;
-          &.used-warning {
-            color: @flat-mutedorange;
-          }
+      .table td {
+        vertical-align:middle
+      }
 
-          &.used-alert {
-            color: @flat-mutedred;
-          }
-        }
+      .value-owner {
+        width:280px;
+      }
 
-        .table td {
-          vertical-align:middle
-        }
+      .owner {
+        display:inline;
+      }
 
-        .value-owner {
-          width:280px;
-        }
+      .service {
+        float:right;
+        width: 50px;
+        margin-right:20px;
+      }
 
-        .owner {
-          display:inline;
-        }
+      .owner-email {
+        font-size:11px;
+        line-height:11px;
 
-        .service {
-          float:right;
-          width: 50px;
-          margin-right:20px;
-        }
+      }
 
-        .owner-email {
-          font-size:11px;
-          line-height:11px;
+      .owner-name {
+      }
 
-        }
+      .org-timezone {
+        font-size: 11px;
+        line-height:11px;
+      }
 
-        .owner-name {
-        }
+      .quick {
+        padding: 5px;
+      }
 
-        .org-timezone {
-          font-size: 11px;
-          line-height:11px;
-        }
+      .quick-searches {
+        margin-bottom: 20px;
+        background: @flat-white + #090909;
+        padding:10px;
+        .rounded-corners(5px);
+      }
 
-        .quick {
-          padding: 5px;
-        }
-
-        .quick-searches {
-          margin-bottom: 20px;
-          background: @flat-white + #090909;
-          padding:10px;
-          .rounded-corners(5px);
-        }
-
-    {% endlessblock %}
+  {% endlessblock %}
 
 -block extra-script
   {{block.super}}

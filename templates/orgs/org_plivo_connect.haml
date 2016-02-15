@@ -29,31 +29,30 @@
       $("form.smartmin-form").attr('autocomplete', 'off');
     });
 -block extra-less
-  -compress css inline
-    {% lessblock %}
-      :plain
-        .connect-help {
-          margin-bottom: 25px;
-          width: 600;
+  {% lessblock %}
+    :plain
+      .connect-help {
+        margin-bottom: 25px;
+        width: 600;
+      }
+
+      .form-horizontal {
+
+        .control-label {
+          display:none;
         }
 
-        .form-horizontal {
-
-          .control-label {
-            display:none;
-          }
-
-          .controls {
-            margin-left: 0px;
-          }
-
-          .form-actions {
-            padding-left: 0px
-          }
+        .controls {
+          margin-left: 0px;
         }
 
-        a:hover {
-          text-decoration: none;
+        .form-actions {
+          padding-left: 0px
         }
+      }
 
-    {% endlessblock %}
+      a:hover {
+        text-decoration: none;
+      }
+
+  {% endlessblock %}

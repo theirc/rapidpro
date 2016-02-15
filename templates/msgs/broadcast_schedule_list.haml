@@ -35,23 +35,22 @@
               -trans "No Matching schedules"
 
 -block extra-less
-  -compress css inline
-    {% lessblock %}
-      :plain
-        td.value-next {
-          color: @color-font-grey;
-          .glyph {
-            font-size:14px;
-            margin-top:2px;
-            margin-right:2px;
-          }
-          font-size: 14px;
+  {% lessblock %}
+    :plain
+      td.value-next {
+        color: @color-font-grey;
+        .glyph {
+          font-size:14px;
+          margin-top:2px;
+          margin-right:2px;
         }
+        font-size: 14px;
+      }
 
-        td.clickable a:hover {
-          text-decoration: none;
-        }
-        .list-table {
-        margin-top:48px;
-        }
-    {% endlessblock %}
+      td.clickable a:hover {
+        text-decoration: none;
+      }
+      .list-table {
+      margin-top:48px;
+      }
+  {% endlessblock %}

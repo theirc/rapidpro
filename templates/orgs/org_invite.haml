@@ -34,18 +34,17 @@
     });
 
 -block extra-less
-  -compress css inline
-    {% lessblock %}
-      :plain
-        .select2-temba-user-group-field {
-          width: 365px !important;
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-          -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-          -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-          border-radius: 0px;
-          -webkit-border-radius: 0px;
-          margin-bottom: 9px;
-        }
-    {% endlessblock %}
+  {% lessblock %}
+    :plain
+      .select2-temba-user-group-field {
+        width: 365px !important;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        border-radius: 0px;
+        -webkit-border-radius: 0px;
+        margin-bottom: 9px;
+      }
+  {% endlessblock %}
 
 

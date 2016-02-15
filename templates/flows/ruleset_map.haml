@@ -24,13 +24,12 @@
       $interpolateProvider.startSymbol("[[")
       $interpolateProvider.endSymbol("]]")
     }
-  %script{src:"{{ STATIC_URL }}coffee/choropleth.js", type:'text/coffeescript'}
+  %script{src:"{{ STATIC_URL }}js/choropleth.js", type:'text/coffeescript'}
 
 -block extra-style
   {{ block.super }}
   %link{type:'text/css', rel:'stylesheet', href:"{{ STATIC_URL }}leaflet-0.7.2/leaflet.css", media:'all'}
-  -compress css
-    %link{type:'text/less', rel:'stylesheet', href:'{{STATIC_URL}}less/analytics.less', media:'all'}
+  %link{type:'text/css', rel:'stylesheet', href:'{{STATIC_URL}}css/analytics.css', media:'all'}
 
   :css
     #map {

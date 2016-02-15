@@ -10,109 +10,108 @@
   :javascript
 
 -block extra-less
-  -compress css
-    {% lessblock %}
-    :plain
+  {% lessblock %}
+  :plain
 
-      .deploy {
+    .deploy {
 
-        max-width:940px;
+      max-width:940px;
 
-        .faq {
-          margin-top:40px;
+      .faq {
+        margin-top:40px;
 
-          .question {
-            font-weight:500;
-            color: #666;
-          }
-
-          .answer {
-            margin-bottom:20px;
-          }
-
+        .question {
+          font-weight:500;
+          color: #666;
         }
 
-
-        h5 {
-          color: @flat-mutedgreen;
-          font-weight:400;
+        .answer {
+          margin-bottom:20px;
         }
 
-        .body {
+      }
+
+
+      h5 {
+        color: @flat-mutedgreen;
+        font-weight:400;
+      }
+
+      .body {
+        margin-top: 5px;
+        .sidebox {
+          border: 1px solid @flat-white;
+          float:right;
+          padding:15px;
+          font-size:12px;
+          width:230px;
+
+          margin-left:50px;
+          margin-right:20px;
           margin-top: 5px;
-          .sidebox {
-            border: 1px solid @flat-white;
-            float:right;
-            padding:15px;
-            font-size:12px;
-            width:230px;
+          margin-bottom: 20px;
 
-            margin-left:50px;
-            margin-right:20px;
-            margin-top: 5px;
-            margin-bottom: 20px;
-
-            img {
-              margin: auto;
-            }
-
-            .caption {
-              float:right;
-              width:150px;
-              margin-left:5px;
-              margin-right:5px;
-            }
+          img {
+            margin: auto;
           }
 
-          .subbox {
+          .caption {
             float:right;
-            padding:15px;
-            background: @flat-white;
-            font-size: 11px;
-            color: #999;
-
-            width:230px;
-            margin-left:50px;
-            margin-right:20px;
-            margin-top: -20px;
-            margin-bottom: 20px;
-
-            h4 {
-              margin-top:0;
-            }
+            width:150px;
+            margin-left:5px;
+            margin-right:5px;
           }
         }
 
+        .subbox {
+          float:right;
+          padding:15px;
+          background: @flat-white;
+          font-size: 11px;
+          color: #999;
 
-        .kind {
+          width:230px;
+          margin-left:50px;
+          margin-right:20px;
+          margin-top: -20px;
+          margin-bottom: 20px;
 
-          margin-top:30px;
-          .icon {
-            background: #A5F281;
-            color: #7CB850;
-            width:34px;
-            height:34px;
-            padding:8px;
-            padding-top:4px;
-            font-size:34px;
-            display:inline-block;
-            border:1px solid grey;
+          h4 {
+            margin-top:0;
           }
-          .title {
-            display:inline-block;
-            margin:10px 0px;
-
-            height:20px;
-            border-left: 6px solid #7CB850;
-            padding-left:10px;
-            font-size:20px;
-            font-weight:200;
-          }
-
         }
       }
 
-    {% endlessblock %}
+
+      .kind {
+
+        margin-top:30px;
+        .icon {
+          background: #A5F281;
+          color: #7CB850;
+          width:34px;
+          height:34px;
+          padding:8px;
+          padding-top:4px;
+          font-size:34px;
+          display:inline-block;
+          border:1px solid grey;
+        }
+        .title {
+          display:inline-block;
+          margin:10px 0px;
+
+          height:20px;
+          border-left: 6px solid #7CB850;
+          padding-left:10px;
+          font-size:20px;
+          font-weight:200;
+        }
+
+      }
+    }
+
+  {% endlessblock %}
 
 
 -block content

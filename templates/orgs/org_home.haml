@@ -62,67 +62,66 @@
     });
 
 -block extra-less
-  -compress css inline
-    {% lessblock %}
-      :plain
+  {% lessblock %}
+    :plain
 
-        #id-channel {
-          a {
+      #id-channel {
+        a {
+          text-decoration:none;
+          &:hover {
             text-decoration:none;
-            &:hover {
-              text-decoration:none;
-            }
           }
         }
+      }
 
-        tr.invite td {
-          color: #ddd;
-        }
+      tr.invite td {
+        color: #ddd;
+      }
 
-        .glyph.level-checkbox:before {
-          content: "\e004";
-        }
+      .glyph.level-checkbox:before {
+        content: "\e004";
+      }
 
-        td.check.checked .glyph.level-checkbox:before {
-          content: "\e05a";
-        }
+      td.check.checked .glyph.level-checkbox:before {
+        content: "\e05a";
+      }
 
-        .glyph.level-checkbox.checked:before {
-          content: "\e05a";
-        }
+      .glyph.level-checkbox.checked:before {
+        content: "\e05a";
+      }
 
-        .glyph.level-checkbox {
-          font-family: 'temba';
-          speak: none;
-          font-style: normal;
-          font-weight: normal;
-          line-height: 1;
-          -webkit-font-smoothing: antialiased;
-          margin-top: 6px;
-          margin-right: 5px;
-          margin-top:2px;
-        }
+      .glyph.level-checkbox {
+        font-family: 'temba';
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        margin-top: 6px;
+        margin-right: 5px;
+        margin-top:2px;
+      }
 
-        .formax-form .table th, .table td {
-          border: 0px;
-        }
+      .formax-form .table th, .table td {
+        border: 0px;
+      }
 
-        td.permission, th.permission {
-          text-align:center;
-        }
+      td.permission, th.permission {
+        text-align:center;
+      }
 
-        th.permission {
-          width:80px;
-        }
+      th.permission {
+        width:80px;
+      }
 
-        td.form {
-          border-top: 1px solid #eee;
-        }
+      td.form {
+        border-top: 1px solid #eee;
+      }
 
-        #plan-form ul.errorlist li {
-          color: #fff;
-        }
-    {% endlessblock %}
+      #plan-form ul.errorlist li {
+        color: #fff;
+      }
+  {% endlessblock %}
 
 -block extra-style
   {{ block.super }}
