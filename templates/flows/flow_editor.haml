@@ -121,14 +121,13 @@
     })
 
 
-  -compress js
-    %script{src:"{{ STATIC_URL }}coffee/flows/app.coffee", type:'text/coffeescript'}
-    %script{src:"{{ STATIC_URL }}coffee/flows/validation.coffee", type:'text/coffeescript'}
-    %script{src:"{{ STATIC_URL }}coffee/flows/widgets.coffee", type:'text/coffeescript'}
-    %script{src:"{{ STATIC_URL }}coffee/flows/services.coffee", type:'text/coffeescript'}
-    %script{src:"{{ STATIC_URL }}coffee/flows/controllers.coffee", type:'text/coffeescript'}
-    %script{src:"{{ STATIC_URL }}coffee/flows/directives.coffee", type:'text/coffeescript'}
-    %script{src:"{{ STATIC_URL }}coffee/simulator.coffee", type:'text/coffeescript'}
+  %script{src:"{{ STATIC_URL }}coffee/flows/app.coffee", type:'text/coffeescript'}
+  %script{src:"{{ STATIC_URL }}coffee/flows/validation.coffee", type:'text/coffeescript'}
+  %script{src:"{{ STATIC_URL }}coffee/flows/widgets.coffee", type:'text/coffeescript'}
+  %script{src:"{{ STATIC_URL }}coffee/flows/services.coffee", type:'text/coffeescript'}
+  %script{src:"{{ STATIC_URL }}coffee/flows/controllers.coffee", type:'text/coffeescript'}
+  %script{src:"{{ STATIC_URL }}coffee/flows/directives.coffee", type:'text/coffeescript'}
+  %script{src:"{{ STATIC_URL }}coffee/simulator.coffee", type:'text/coffeescript'}
 
 
   :javascript

@@ -18,14 +18,13 @@
   %script{src:"{{ STATIC_URL }}js/angular.min.js"}
   %script{src:"{{ STATIC_URL }}js/angular-ui.min.js"}
 
-  -compress js
-    :javascript
-      app = angular.module("map", ["ui"])
-      app.config = function($interpolateProvider) {
-        $interpolateProvider.startSymbol("[[")
-        $interpolateProvider.endSymbol("]]")
-      }
-    %script{src:"{{ STATIC_URL }}coffee/choropleth.coffee", type:'text/coffeescript'}
+  :javascript
+    app = angular.module("map", ["ui"])
+    app.config = function($interpolateProvider) {
+      $interpolateProvider.startSymbol("[[")
+      $interpolateProvider.endSymbol("]]")
+    }
+  %script{src:"{{ STATIC_URL }}coffee/choropleth.coffee", type:'text/coffeescript'}
 
 -block extra-style
   {{ block.super }}

@@ -204,13 +204,12 @@
   <script src="{{ STATIC_URL }}js/highcharts.js"></script>
   <script src="{{ STATIC_URL }}/js/highcharts-theme.js?v=2"></script>
 
-  -compress js
-    :javascript
-      var app = angular.module("analytics", ['ui.sortable']);
-      app.config(function($interpolateProvider) {
-        $interpolateProvider.startSymbol("[[")
-        $interpolateProvider.endSymbol("]]")
-      });
+  :javascript
+    var app = angular.module("analytics", ['ui.sortable']);
+    app.config(function($interpolateProvider) {
+      $interpolateProvider.startSymbol("[[")
+      $interpolateProvider.endSymbol("]]")
+    });
 
   :javascript
     var saveReportURL = '{% url "reports.report_create" %}';
@@ -226,6 +225,5 @@
   %script{src:"{{ STATIC_URL }}leaflet-0.7.3/leaflet.js"}
   %script{src:"{{ STATIC_URL }}angular-ui/sortable-0.13.0.js"}
 
-  -compress js
-    %script{type:'text/coffeescript', charset:'utf-8', src:'{{ STATIC_URL }}coffee/analytics.coffee'}
-    %script{type:'text/coffeescript', charset:'utf-8', src:'{{ STATIC_URL }}coffee/choropleth.coffee'}
+  %script{type:'text/coffeescript', charset:'utf-8', src:'{{ STATIC_URL }}coffee/analytics.coffee'}
+  %script{type:'text/coffeescript', charset:'utf-8', src:'{{ STATIC_URL }}coffee/choropleth.coffee'}

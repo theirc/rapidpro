@@ -1,5 +1,26 @@
 module.exports = function (grunt) {
+    grunt.loadNpmTasks('grunt-contrib-coffee');
 
+    var coffeeTask = {
+        expand: true,
+        cwd: "./Scripts",
+        src: ["**/*.coffee"],
+        dest: "./Scripts",
+        ext: ".js"
+    };
+
+    grunt.initConfig({
+        coffee: {
+            compile: {
+                expand: true,
+                flatten: true,
+                cwd: __dirname + "/static/",
+                src: ['**/*.coffee'],
+                dest: __dirname + '/static/',
+                ext: '.js'
+            }
+        }
+    });
     grunt.registerTask('install', 'install the backend and frontend dependencies', function () {
         var exec = require('child_process').exec;
         var cb = this.async();
@@ -21,12 +42,6 @@ module.exports = function (grunt) {
 
     });
 
+    grunt.registerTask('dokku:production', ['install', 'coffee']);
 
-    var gtx = require('gruntfile-gtx').wrap(grunt);
-
-    gtx.loadAuto();
-
-    gtx.alias('dokku:production', ['install']);
-
-    gtx.finalise();
 }
