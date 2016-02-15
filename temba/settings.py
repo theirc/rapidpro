@@ -1,4 +1,4 @@
-#-----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------
 # Sample RapidPro settings file, this should allow you to deploy RapidPro locally on
 # a PostgreSQL database.
 #
@@ -10,7 +10,6 @@
 
 # import our default settings
 from settings_common import *
-import logging
 
 #-----------------------------------------------------------------------------------
 # Used when creating callbacks for Twilio, Nexmo etc..
@@ -88,9 +87,10 @@ SEND_EMAILS = True
 # always contain a timezone)
 #-----------------------------------------------------------------------------------
 import warnings
+
 warnings.filterwarnings(
-        'error', r"DateTimeField .* received a naive datetime",
-        RuntimeWarning, r'django\.db\.models\.fields')
+    'error', r"DateTimeField .* received a naive datetime",
+    RuntimeWarning, r'django\.db\.models\.fields')
 
 #-----------------------------------------------------------------------------------
 # Make our sitestatic URL be our static URL on development
@@ -113,7 +113,7 @@ COMPRESS_OFFLINE = False
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-AWS_PRELOAD_METADATA = True # necessary to fix manage.py collectstatic command to only upload changed files instead of all files
+AWS_PRELOAD_METADATA = True  # necessary to fix manage.py collectstatic command to only upload changed files instead of all files
 AWS_QUERYSTRING_AUTH = False
 
 S3_URL = 'https://%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
@@ -123,10 +123,26 @@ STATIC_URL = S3_URL + '/'
 
 ADMIN_MEDIA_PREFIX = STATIC_URL + '/'
 
-
 COMPRESS_URL = STATIC_URL
 COMPRESS_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 STATICFILES_STORAGE = COMPRESS_STORAGE
 DEBUG = False
 ALLOWED_HOSTS = ['*']
 
+TEMPLATE_CONTEXT_PROCESSORS += ('temba.tests.add_testing_flag_to_context', )
+
+MIDDLEWARE_CLASSES = (
+    'temba.middleware.ExceptionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'temba.utils.middleware.DisableMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'silk.middleware.SilkyMiddleware'
+    'temba.middleware.BrandingMiddleware',
+    'temba.middleware.OrgTimezoneMiddleware',
+    'temba.middleware.FlowSimulationMiddleware',
+    'temba.middleware.ActivateLanguageMiddleware',
+    'temba.middleware.NonAtomicGetsMiddleware',
+)
