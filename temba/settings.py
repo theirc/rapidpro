@@ -73,8 +73,6 @@ MIDDLEWARE_CLASSES = (
 #CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 #BROKER_BACKEND = 'memory'
 
-COMPRESS_ENABLED = False
-
 SEND_MESSAGES = True
 SEND_WEBHOOKS = True
 SEND_EMAILS = True
@@ -92,7 +90,6 @@ warnings.filterwarnings(
 #-----------------------------------------------------------------------------------
 # Make our sitestatic URL be our static URL on development
 #-----------------------------------------------------------------------------------
-STATIC_URL = '/sitestatic/'
 #STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 
@@ -100,12 +97,6 @@ import dj_database_url
 
 if 'DATABASE_URL' in os.environ:
     DATABASES['default'] = dj_database_url.config()
-
-COMPRESS_URL = '/static/'
-STATIC_URL = '/static/'
-
-COMPRESS_ENABLED = False
-COMPRESS_OFFLINE = False
 
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
@@ -117,18 +108,15 @@ S3_BASE = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 S3_URL = 'https://%s' % S3_BASE
 MEDIA_URL = S3_URL + '/media/'
 
-STATIC_URL = S3_URL + '/'
 ADMIN_MEDIA_PREFIX = STATIC_URL + '/'
 
 MEDIAFILES_LOCATION = 'media'
-MEDIA_URL = "https://%s/%s/" % (S3_BASE, MEDIAFILES_LOCATION)
 DEFAULT_FILE_STORAGE = 'temba.storage.MediaStorage'
 
 
 COMPRESS_URL = STATIC_URL = os.environ.get('CLOUDFRONT_URL', S3_URL + '/')
 AWS_S3_CUSTOM_DOMAIN = os.environ.get('CLOUDFRONT_DOMAIN', S3_BASE)
-COMPRESS_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-STATICFILES_STORAGE = COMPRESS_STORAGE
+
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 
@@ -142,3 +130,4 @@ COMPRESS_STORAGE = STATICFILES_STORAGE = "temba.storage.CachedS3BotoStorage"
 # COMPRESS_URL = STATIC_URL = "/static/"
 # uncomment the line above. Run collect static and recomment it
 
+COMPRESS_REBUILD_TIMEOUT = 10
