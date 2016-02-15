@@ -58,13 +58,17 @@ INTERNAL_IPS = ('127.0.0.1',)
 #-----------------------------------------------------------------------------------
 # Load development apps
 #-----------------------------------------------------------------------------------
-INSTALLED_APPS = INSTALLED_APPS + ('storages',)
+INSTALLED_APPS = INSTALLED_APPS + ('storages', 'silk', )
 # INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar', )
 
 #-----------------------------------------------------------------------------------
 # In development, add in extra logging for exceptions and the debug toolbar
 #-----------------------------------------------------------------------------------
-MIDDLEWARE_CLASSES = ('temba.middleware.ExceptionMiddleware',) + MIDDLEWARE_CLASSES
+MIDDLEWARE_CLASSES = (
+                         'temba.middleware.ExceptionMiddleware',
+                     ) + MIDDLEWARE_CLASSES + (
+                         'silk.middleware.SilkyMiddleware',
+                     )
 
 #-----------------------------------------------------------------------------------
 # In development, perform background tasks in the web thread (synchronously)
