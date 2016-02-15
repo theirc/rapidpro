@@ -33,8 +33,6 @@ urlpatterns = patterns('',
     url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict)
 )
 
-urlpatterns += patterns('', url(r'^silk/', include('silk.urls', namespace='silk')))
-
 if settings.DEBUG:
     urlpatterns += patterns('', url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, }), )
 

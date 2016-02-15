@@ -57,19 +57,16 @@ INTERNAL_IPS = ('127.0.0.1',)
 #-----------------------------------------------------------------------------------
 # Load development apps
 #-----------------------------------------------------------------------------------
-INSTALLED_APPS = INSTALLED_APPS + ('storages', 'silk', )
-# INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar', )
+INSTALLED_APPS = INSTALLED_APPS + ('storages', )
 
 #-----------------------------------------------------------------------------------
 # In development, add in extra logging for exceptions and the debug toolbar
 #-----------------------------------------------------------------------------------
 MIDDLEWARE_CLASSES = (
                          'temba.middleware.ExceptionMiddleware',
-                     ) + MIDDLEWARE_CLASSES + (
-                         'silk.middleware.SilkyMiddleware',
-                     )
+                     ) + MIDDLEWARE_CLASSES
 
-#-----------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
 # In development, perform background tasks in the web thread (synchronously)
 #-----------------------------------------------------------------------------------
 #CELERY_ALWAYS_EAGER = True
@@ -130,19 +127,3 @@ DEBUG = False
 ALLOWED_HOSTS = ['*']
 
 TEMPLATE_CONTEXT_PROCESSORS += ('temba.tests.add_testing_flag_to_context', )
-
-MIDDLEWARE_CLASSES = (
-    'temba.middleware.ExceptionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'temba.utils.middleware.DisableMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'silk.middleware.SilkyMiddleware'
-    'temba.middleware.BrandingMiddleware',
-    'temba.middleware.OrgTimezoneMiddleware',
-    'temba.middleware.FlowSimulationMiddleware',
-    'temba.middleware.ActivateLanguageMiddleware',
-    'temba.middleware.NonAtomicGetsMiddleware',
-)
