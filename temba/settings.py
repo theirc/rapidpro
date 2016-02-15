@@ -118,7 +118,6 @@ S3_URL = 'https://%s' % S3_BASE
 MEDIA_URL = S3_URL + '/media/'
 
 STATIC_URL = S3_URL + '/'
-AWS_S3_CUSTOM_DOMAIN = S3_BASE
 ADMIN_MEDIA_PREFIX = STATIC_URL + '/'
 
 MEDIAFILES_LOCATION = 'media'
@@ -127,6 +126,7 @@ DEFAULT_FILE_STORAGE = 'temba.storage.MediaStorage'
 
 
 COMPRESS_URL = STATIC_URL = os.environ.get('CLOUDFRONT_URL', S3_URL + '/')
+AWS_S3_CUSTOM_DOMAIN = os.environ.get('CLOUDFRONT_DOMAIN', S3_BASE)
 COMPRESS_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 STATICFILES_STORAGE = COMPRESS_STORAGE
 DEBUG = True
