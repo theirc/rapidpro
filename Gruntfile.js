@@ -54,6 +54,6 @@ module.exports = function (grunt) {
 
     });
 
-    grunt.registerTask('dokku:production', ['install', 'coffee']);
+    grunt.registerTask('dokku:production', ['install']);
 
 }
