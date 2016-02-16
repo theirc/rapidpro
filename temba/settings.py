@@ -127,7 +127,7 @@ COMPRESS_ENABLED = True
 
 COMPRESS_STORAGE = STATICFILES_STORAGE = "temba.storage.CachedS3BotoStorage"
 # Hack to have the compressor run offline
-# COMPRESS_URL = STATIC_URL = "/static/"
+#COMPRESS_URL = STATIC_URL = "/static/"
 # uncomment the line above. Run collect static and recomment it
 
-COMPRESS_REBUILD_TIMEOUT = 10
+#COMPRESS_REBUILD_TIMEOUT = 10
