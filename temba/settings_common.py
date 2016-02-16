@@ -302,9 +302,29 @@ BRANDING = {
         'welcome_packs': [dict(size=5000, name="Demo Account"), dict(size=100000, name="UNICEF Account")],
         'description': _("Visually build nationally scalable mobile applications from anywhere in the world."),
         'credits': _("Copyright &copy; 2012-2015 UNICEF, Nyaruka. All Rights Reserved.")
+    },
+    'sms.ictlabserbia.org': {
+        'slug': 'rapidpro',
+        'name': 'RescueSMS',
+        'org': 'IRC',
+        'styles': ['brands/rapidpro/font/style.css', 'brands/rapidpro/less/style.less'],
+        'welcome_topup': 100000,
+        'email': 'join@ictlabserbia.org',
+        'support_email': 'support@ictlabserbia.org',
+        'link': 'https://sms.ictlabserbia.org',
+        'api_link': 'https://sms.ictlabserbia.org/api/v1',
+        'docs_link': 'http://sms.ictlabserbia.org',
+        'domain': 'sms.rapidpro.io',
+        'favico': 'brands/rapidpro/rapidpro.ico',
+        'splash': '/brands/rapidpro/splash.jpg',
+        'logo': '/brands/rapidpro/logo.png',
+        'allow_signups': True,
+        'welcome_packs': [dict(size=5000, name="Demo Account"), dict(size=100000, name="UNICEF Account")],
+        'description': _("Visually build nationally scalable mobile applications from anywhere in the world."),
+        'credits': _("Copyright &copy; 2012-2016 IRC, UNICEF, Nyaruka. All Rights Reserved.")
     }
 }
-DEFAULT_BRAND = 'rapidpro.io'
+DEFAULT_BRAND = 'sms.ictlabserbia.org'
 
 #-----------------------------------------------------------------------------------
 # Directory Configuration
