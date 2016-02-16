@@ -126,6 +126,11 @@ TEMPLATE_CONTEXT_PROCESSORS += ('temba.tests.add_testing_flag_to_context', )
 COMPRESS_ENABLED = True
 
 COMPRESS_STORAGE = STATICFILES_STORAGE = "temba.storage.CachedS3BotoStorage"
+
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
 # Hack to have the compressor run offline
 #COMPRESS_URL = STATIC_URL = "/static/"
 # uncomment the line above. Run collect static and recomment it
