@@ -1,9 +1,9 @@
 from __future__ import absolute_import, unicode_literals
 
 import json
-import plivo
-import regex
 import logging
+import plivo
+import six
 
 from collections import OrderedDict
 from datetime import datetime
@@ -28,20 +28,21 @@ from django.views.generic import View
 from operator import attrgetter
 from smartmin.views import SmartCRUDL, SmartCreateView, SmartFormView, SmartReadView, SmartUpdateView, SmartListView, SmartTemplateView
 from datetime import timedelta
+from temba.api.models import APIToken
 from temba.assets.models import AssetType
 from temba.channels.models import Channel, PLIVO_AUTH_ID, PLIVO_AUTH_TOKEN
 from temba.formax import FormaxMixin
 from temba.middleware import BrandingMiddleware
-from temba.nexmo import NexmoClient
-from temba.orgs.models import get_stripe_credentials
+from temba.nexmo import NexmoClient, NexmoValidationError
+from temba.orgs.models import get_stripe_credentials, NEXMO_UUID, NEXMO_SECRET, NEXMO_KEY
 from temba.utils import analytics, build_json_response, languages
 from temba.utils.middleware import disable_middleware
 from timezones.forms import TimeZoneField
-from twilio import TwilioRestException
 from twilio.rest import TwilioRestClient
 from .bundles import WELCOME_TOPUP_SIZE
 from .models import Org, OrgCache, OrgEvent, TopUp, Invitation, UserSettings
 from .models import MT_SMS_EVENTS, MO_SMS_EVENTS, MT_CALL_EVENTS, MO_CALL_EVENTS, ALARM_EVENTS
+from .models import SUSPENDED, WHITELISTED, RESTORED
 
 
 def check_login(request):
@@ -148,13 +149,13 @@ class ModalMixin(SmartFormView):
     def get_context_data(self, **kwargs):
         context = super(ModalMixin, self).get_context_data(**kwargs)
 
-        if 'HTTP_X_PJAX' in self.request.META and not 'HTTP_X_FORMAX' in self.request.META:  # pragma: no cover
+        if 'HTTP_X_PJAX' in self.request.META and 'HTTP_X_FORMAX' not in self.request.META:  # pragma: no cover
             context['base_template'] = "smartmin/modal.html"
         if 'success_url' in kwargs:  # pragma: no cover
             context['success_url'] = kwargs['success_url']
 
-        context['action_url'] = self.request.path + "?" + \
-                                "&".join(urlquote(_) + "=" + urlquote(self.request.REQUEST[_]) for _ in self.request.REQUEST.keys() if _ != '_')
+        pairs = [urlquote(k) + "=" + urlquote(v) for k, v in six.iteritems(self.request.REQUEST) if k != '_']
+        context['action_url'] = self.request.path + "?" + ("&".join(pairs))
 
         return context
 
@@ -424,8 +425,8 @@ class UserSettingsCRUDL(SmartCRUDL):
 class OrgCRUDL(SmartCRUDL):
     actions = ('signup', 'home', 'webhook', 'edit', 'join', 'grant', 'create_login', 'choose',
                'manage_accounts', 'manage', 'update', 'country', 'languages', 'clear_cache', 'download',
-               'twilio_connect', 'twilio_account', 'nexmo_account', 'nexmo_connect', 'export', 'import',
-               'plivo_connect', 'service', 'surveyor')
+               'twilio_connect', 'twilio_account', 'nexmo_configuration', 'nexmo_account', 'nexmo_connect', 'export',
+               'import', 'plivo_connect', 'service', 'surveyor')
 
     model = Org
 
@@ -488,7 +489,7 @@ class OrgCRUDL(SmartCRUDL):
             from temba.flows.models import Flow
             from temba.campaigns.models import Campaign
 
-            flows = set(Flow.objects.filter(id__in=self.request.REQUEST.getlist('flows'), org=self.get_object()))
+            flows = set(Flow.objects.filter(id__in=self.request.REQUEST.getlist('flows'), org=self.get_object(), is_active=True))
             campaigns = Campaign.objects.filter(id__in=self.request.REQUEST.getlist('campaigns'), org=self.get_object())
 
             # add in all the flows our campaign depends on
@@ -509,6 +510,7 @@ class OrgCRUDL(SmartCRUDL):
 
         def get_context_data(self, **kwargs):
             from collections import defaultdict
+
             def connected_components(lists):
                 neighbors = defaultdict(set)
                 seen = set()
@@ -517,7 +519,7 @@ class OrgCRUDL(SmartCRUDL):
                         neighbors[item].update(each)
 
                 def component(node, neighbors=neighbors, seen=seen, see=seen.add):
-                    nodes = set([node])
+                    nodes = {node}
                     next_node = nodes.pop
                     while nodes:
                         node = next_node()
@@ -552,7 +554,6 @@ class OrgCRUDL(SmartCRUDL):
                 all_depends.append((campaign,))
 
             buckets = connected_components(all_depends)
-
 
             # sort our buckets, campaigns, flows, triggers
             bucket_list = []
@@ -624,6 +625,45 @@ class OrgCRUDL(SmartCRUDL):
             response['Temba-Success'] = self.get_success_url()
             return response
 
+    class NexmoConfiguration(InferOrgMixin, OrgPermsMixin, SmartReadView):
+
+        def get(self, request, *args, **kwargs):
+            org = self.get_object()
+
+            nexmo_client = org.get_nexmo_client()
+            if not nexmo_client:
+                return HttpResponseRedirect(reverse("orgs.org_nexmo_connect"))
+
+            nexmo_uuid = org.nexmo_uuid()
+            mo_path = reverse('handlers.nexmo_handler', args=['receive', nexmo_uuid])
+            dl_path = reverse('handlers.nexmo_handler', args=['status', nexmo_uuid])
+            try:
+                from temba.settings import TEMBA_HOST
+                nexmo_client.update_account('http://%s%s' % (TEMBA_HOST, mo_path),
+                                            'http://%s%s' % (TEMBA_HOST, dl_path))
+
+                return HttpResponseRedirect(reverse("channels.channel_claim_nexmo"))
+
+            except NexmoValidationError:
+                return super(OrgCRUDL.NexmoConfiguration, self).get(request, *args, **kwargs)
+
+        def get_context_data(self, **kwargs):
+            context = super(OrgCRUDL.NexmoConfiguration, self).get_context_data(**kwargs)
+
+            from temba.settings import TEMBA_HOST
+            org = self.get_object()
+            config = org.config_json()
+            context['nexmo_api_key'] = config[NEXMO_KEY]
+            context['nexmo_api_secret'] = config[NEXMO_SECRET]
+
+            nexmo_uuid = config.get(NEXMO_UUID, None)
+            mo_path = reverse('handlers.nexmo_handler', args=['receive', nexmo_uuid])
+            dl_path = reverse('handlers.nexmo_handler', args=['status', nexmo_uuid])
+            context['mo_path'] = 'https://%s%s' % (TEMBA_HOST, mo_path)
+            context['dl_path'] = 'https://%s%s' % (TEMBA_HOST, dl_path)
+
+            return context
+
     class NexmoAccount(ModalMixin, InferOrgMixin, OrgPermsMixin, SmartUpdateView):
         fields = ()
         submit_button_name = "Disconnect Nexmo"
@@ -666,7 +706,7 @@ class OrgCRUDL(SmartCRUDL):
 
         form_class = NexmoConnectForm
         submit_button_name = "Save"
-        success_url = '@channels.channel_claim_nexmo'
+        success_url = '@orgs.org_nexmo_configuration'
         field_config = dict(api_key=dict(label=""), api_secret=dict(label=""))
         success_message = "Nexmo Account successfully connected."
 
@@ -675,7 +715,9 @@ class OrgCRUDL(SmartCRUDL):
             api_secret = form.cleaned_data['api_secret']
 
             org = self.get_object()
+
             org.connect_nexmo(api_key, api_secret)
+
             org.save()
 
             response = self.render_to_response(self.get_context_data(form=form,
@@ -730,16 +772,12 @@ class OrgCRUDL(SmartCRUDL):
             response['Temba-Success'] = self.get_success_url()
             return response
 
-
     class Manage(SmartListView):
         fields = ('credits', 'used', 'name', 'owner', 'created_on')
         default_order = ('-credits', '-created_on',)
-        search_fields = ('name__icontains', 'created_by__email__iexact')
+        search_fields = ('name__icontains', 'created_by__email__iexact', 'config__icontains')
         link_fields = ('name', 'owner')
         title = "Organizations"
-
-        def get_paid(self, obj):
-            return "$%s" % (obj.paid / 100)
 
         def get_used(self, obj):
             if not obj.credits:
@@ -771,7 +809,11 @@ class OrgCRUDL(SmartCRUDL):
                    "<div class='owner-email'>%s</div>" % (url, obj.id, owner.first_name, owner.last_name, owner)
 
         def get_name(self, obj):
-            return "<div class='org-name'>%s</div><div class='org-timezone'>%s</div>" % (obj.name, obj.timezone)
+            suspended = ''
+            if obj.is_suspended():
+                suspended = '<span class="suspended">(Suspended)</span>'
+
+            return "<div class='org-name'>%s %s</div><div class='org-timezone'>%s</div>" % (suspended, obj.name, obj.timezone)
 
         def derive_queryset(self, **kwargs):
             queryset = super(OrgCRUDL.Manage, self).derive_queryset(**kwargs)
@@ -805,20 +847,79 @@ class OrgCRUDL(SmartCRUDL):
                 fields = '__all__'
 
         form_class = OrgUpdateForm
-        success_url = '@orgs.org_manage'
+
+        def get_success_url(self):
+            return reverse('orgs.org_update', args=[self.get_object().pk])
+
+        def get_gear_links(self):
+            links = []
+
+            org = self.get_object()
+
+            links.append(dict(title=_('Topups'),
+                              style='btn-primary',
+                              href='%s?org=%d' % (reverse("orgs.topup_manage"), org.pk)))
+
+            if org.is_suspended():
+                links.append(dict(title=_('Restore'),
+                                  style='btn-secondary',
+                                  posterize=True,
+                                  href='%s?status=restored' % reverse("orgs.org_update", args=[org.pk])))
+            else:
+                links.append(dict(title=_('Suspend'),
+                                  style='btn-secondary',
+                                  posterize=True,
+                                  href='%s?status=suspended' % reverse("orgs.org_update", args=[org.pk])))
+
+            if not org.is_whitelisted():
+                links.append(dict(title=_('Whitelist'),
+                                  style='btn-secondary',
+                                  posterize=True,
+                                  href='%s?status=whitelisted' % reverse("orgs.org_update", args=[org.pk])))
+
+            return links
+
+        def post(self, request, *args, **kwargs):
+            if 'status' in request.REQUEST:
+                if request.REQUEST.get('status', None) == SUSPENDED:
+                    self.get_object().set_suspended()
+                elif request.REQUEST.get('status', None) == WHITELISTED:
+                    self.get_object().set_whitelisted()
+                elif request.REQUEST.get('status', None) == RESTORED:
+                    self.get_object().set_restored()
+                return HttpResponseRedirect(self.get_success_url())
+            return super(OrgCRUDL.Update, self).post(request, *args, **kwargs)
 
     class ManageAccounts(InferOrgMixin, OrgPermsMixin, SmartUpdateView):
 
-        class InviteForm(forms.ModelForm):
-            emails = forms.CharField(label=_("Invite people to your organization"), required=False)
-            user_group = forms.ChoiceField(choices=(('A', _("Administrators")),
-                                                    ('E', _("Editors")),
-                                                    ('V', _("Viewers")),
-                                                    ('S', _("Surveyors"))),
-                                           required=True, initial='V', label=_("User group"))
+        class AccountsForm(forms.ModelForm):
+            invite_emails = forms.CharField(label=_("Invite people to your organization"), required=False)
+            invite_group = forms.ChoiceField(choices=(('A', _("Administrators")),
+                                                      ('E', _("Editors")),
+                                                      ('V', _("Viewers")),
+                                                      ('S', _("Surveyors"))),
+                                             required=True, initial='V', label=_("User group"))
 
-            def clean_emails(self):
-                emails = self.cleaned_data['emails'].lower().strip()
+            def add_user_group_fields(self, groups, users):
+                fields_by_user = {}
+
+                for user in users:
+                    fields = []
+                    field_mapping = []
+
+                    for group in groups:
+                        check_field = forms.BooleanField(required=False)
+                        field_name = "%s_%d" % (group.lower(), user.pk)
+
+                        field_mapping.append((field_name, check_field))
+                        fields.append(field_name)
+
+                    self.fields = OrderedDict(self.fields.items() + field_mapping)
+                    fields_by_user[user] = fields
+                return fields_by_user
+
+            def clean_invite_emails(self):
+                emails = self.cleaned_data['invite_emails'].lower().strip()
                 if emails:
                     email_list = emails.split(',')
                     for email in email_list:
@@ -830,56 +931,37 @@ class OrgCRUDL(SmartCRUDL):
 
             class Meta:
                 model = Invitation
-                fields = ('emails', 'user_group')
+                fields = ('invite_emails', 'invite_group')
 
-        form_class = InviteForm
+        form_class = AccountsForm
         success_url = "@orgs.org_home"
         success_message = ""
-        GROUP_LEVELS = ('administrators', 'editors', 'viewers', 'surveyors')
+        ORG_GROUPS = ('Administrators', 'Editors', 'Viewers', 'Surveyors')
+
+        @staticmethod
+        def org_group_set(org, group_name):
+            return getattr(org, group_name.lower())
 
         def derive_title(self):
-            return _("Manage %(name)s Accounts") % {'name':self.get_object().name}
-
-        def add_check_fields(self, form, objects, org_id, field_dict):
-            for obj in objects:
-                fields = []
-
-                field_mapping = []
-                for grp_level in self.GROUP_LEVELS:
-                    check_field = forms.BooleanField(required=False)
-                    field_name = "%s_%d" % (grp_level, obj.id)
-
-                    field_mapping.append((field_name, check_field))
-                    fields.append(field_name)
-
-                # as of django 1.7 we can't insert into fields, construct a new OrderedDict
-                form.fields = OrderedDict(form.fields.items() + field_mapping)
-                field_dict[obj] = fields
+            return _("Manage %(name)s Accounts") % {'name': self.get_object().name}
 
         def derive_initial(self):
-            self.org_users = self.get_object().get_org_users()
+            initial = super(OrgCRUDL.ManageAccounts, self).derive_initial()
 
-            initial = dict()
-            for grp_level in self.GROUP_LEVELS:
-                if grp_level == 'administrators':
-                    assigned_users = self.get_object().get_org_admins()
-                if grp_level == 'editors':
-                    assigned_users = self.get_object().get_org_editors()
-                if grp_level == 'viewers':
-                    assigned_users = self.get_object().get_org_viewers()
-                if grp_level == 'surveyors':
-                    assigned_users = self.get_object().get_org_surveyors()
+            org = self.get_object()
+            for group in self.ORG_GROUPS:
+                users_in_group = self.org_group_set(org, group).all()
 
-                for obj in assigned_users:
-                    key = "%s_%d" % (grp_level, obj.id)
-                    initial[key] = True
+                for user in users_in_group:
+                    initial['%s_%d' % (group.lower(), user.pk)] = True
 
             return initial
 
         def get_form(self, form_class):
             form = super(OrgCRUDL.ManageAccounts, self).get_form(form_class)
-            self.group_fields = dict()
-            self.add_check_fields(form, self.org_users, self.get_object().pk, self.group_fields)
+
+            self.org_users = self.get_object().get_org_users()
+            self.fields_by_users = form.add_user_group_fields(self.ORG_GROUPS, self.org_users)
 
             return form
 
@@ -887,71 +969,56 @@ class OrgCRUDL(SmartCRUDL):
             obj = super(OrgCRUDL.ManageAccounts, self).post_save(obj)
 
             cleaned_data = self.form.cleaned_data
-            user = self.request.user
             org = self.get_object()
 
-            user_group = cleaned_data['user_group']
+            invite_emails = cleaned_data['invite_emails'].lower().strip()
+            invite_group = cleaned_data['invite_group']
+            invite_host = self.request.branding['host']
 
-            emails = cleaned_data['emails'].lower().strip()
-            email_list = emails.split(',')
-
-            host = self.request.branding['host']
-
-            if emails:
-                for email in email_list:
-
+            if invite_emails:
+                for email in invite_emails.split(','):
                     # if they already have an invite, update it
                     invites = Invitation.objects.filter(email=email, org=org).order_by('-pk')
                     invitation = invites.first()
 
                     if invitation:
+                        invites.exclude(pk=invitation.pk).delete()  # remove any old invites
 
-                        # remove any old invites
-                        invites.exclude(pk=invitation.pk).delete()
-
-                        invitation.user_group = user_group
+                        invitation.user_group = invite_group
                         invitation.is_active = True
                         invitation.save()
                     else:
-                        invitation = Invitation.objects.create(email=email,
-                                                               org=org,
-                                                               host=host,
-                                                               user_group=user_group,
-                                                               created_by=user,
-                                                               modified_by=user)
+                        invitation = Invitation.create(org, self.request.user, email, invite_group, invite_host)
 
                     invitation.send_invitation()
 
-            # remove all the org users
-            org = self.get_object()
-            for user in org.get_org_admins():
-                org.administrators.remove(user)
-            for user in org.get_org_editors():
-                org.editors.remove(user)
-            for user in org.get_org_viewers():
-                org.viewers.remove(user)
-            for user in org.get_org_surveyors():
-                org.surveyors.remove(user)
+            current_groups = {}
+            new_groups = {}
 
-            # now update the org accounts
-            for field in self.form.fields:
-                if self.form.cleaned_data[field]:
-                    matcher = regex.match("(\w+)_(\d+)", field, regex.V0)
-                    if matcher:
-                        user_type = matcher.group(1)
-                        user_id = matcher.group(2)
-                        user = User.objects.get(pk=user_id)
-                        if user_type == 'administrators':
-                            self.get_object().administrators.add(user)
-                        if user_type == 'editors':
-                            self.get_object().editors.add(user)
-                        if user_type == 'viewers':
-                            self.get_object().viewers.add(user)
-                        if user_type == 'surveyors':
-                            self.get_object().surveyors.add(user)
+            for group in self.ORG_GROUPS:
+                # gather up existing users with their groups
+                for user in self.org_group_set(org, group).all():
+                    current_groups[user] = group
 
-            # update our org users after we've removed them
-            self.org_users = self.get_object().get_org_users()
+                # parse form fields to get new roles
+                for field in self.form.cleaned_data:
+                    if field.startswith(group.lower() + '_') and self.form.cleaned_data[field]:
+                        user = User.objects.get(pk=field.split('_')[1])
+                        new_groups[user] = group
+
+            for user in current_groups.keys():
+                current_group = current_groups.get(user)
+                new_group = new_groups.get(user)
+
+                if current_group != new_group:
+                    if current_group:
+                        self.org_group_set(org, current_group).remove(user)
+                    if new_group:
+                        self.org_group_set(org, new_group).add(user)
+
+                    # when a user's role changes, delete any API tokens they're no longer allowed to have
+                    api_roles = APIToken.get_allowed_roles(org, user)
+                    APIToken.objects.filter(org=org, user=user).exclude(role__in=api_roles).delete()
 
             return obj
 
@@ -960,19 +1027,16 @@ class OrgCRUDL(SmartCRUDL):
             org = self.get_object()
             context['org'] = org
             context['org_users'] = self.org_users
-            context['group_fields'] = self.group_fields
+            context['group_fields'] = self.fields_by_users
             context['invites'] = Invitation.objects.filter(org=org, is_active=True).order_by('email')
 
             return context
 
         def get_success_url(self):
-            # if we are no longer part of this form, redirect to the chooser
-            if self.request.user not in self.org_users:
-                return reverse('orgs.org_choose')
+            still_in_org = self.request.user in self.get_object().get_org_users()
 
-            # otherwise, back to our home page
-            else:
-                return reverse('orgs.org_home')
+            # if current user no longer belongs to this org, redirect to org chooser
+            return reverse('orgs.org_home') if still_in_org else reverse('orgs.org_choose')
 
     class Service(SmartFormView):
         class ServiceForm(forms.Form):
@@ -1058,8 +1122,6 @@ class OrgCRUDL(SmartCRUDL):
         permission = False
 
         def pre_process(self, request, *args, **kwargs):
-            secret = self.kwargs.get('secret')
-
             org = self.get_object()
             if not org:
                 messages.info(request, _("Your invitation link is invalid. Please contact your organization administrator."))
@@ -1121,7 +1183,7 @@ class OrgCRUDL(SmartCRUDL):
 
         def derive_title(self):
             org = self.get_object()
-            return _("Join %(name)s") % {'name':org.name}
+            return _("Join %(name)s") % {'name': org.name}
 
         def get_context_data(self, **kwargs):
             context = super(OrgCRUDL.CreateLogin, self).get_context_data(**kwargs)
@@ -1158,7 +1220,7 @@ class OrgCRUDL(SmartCRUDL):
 
         def derive_title(self):
             org = self.get_object()
-            return _("Join %(name)s") % {'name':org.name}
+            return _("Join %(name)s") % {'name': org.name}
 
         def save(self, org):
             org = self.get_object()
@@ -1267,7 +1329,7 @@ class OrgCRUDL(SmartCRUDL):
             obj = super(OrgCRUDL.Grant, self).post_save(obj)
             obj.administrators.add(self.user)
 
-            if not self.request.user.is_anonymous():
+            if not self.request.user.is_anonymous() and self.request.user.has_perm('orgs.org_grant'):
                 obj.administrators.add(self.request.user.pk)
 
             brand = BrandingMiddleware.get_branding_for_host(obj.brand)
@@ -1353,11 +1415,16 @@ class OrgCRUDL(SmartCRUDL):
             data = self.form.cleaned_data
 
             webhook_events = 0
-            if data['mt_sms']: webhook_events = MT_SMS_EVENTS
-            if data['mo_sms']: webhook_events |= MO_SMS_EVENTS
-            if data['mt_call']: webhook_events |= MT_CALL_EVENTS
-            if data['mo_call']: webhook_events |= MO_CALL_EVENTS
-            if data['alarm']: webhook_events |= ALARM_EVENTS
+            if data['mt_sms']:
+                webhook_events = MT_SMS_EVENTS
+            if data['mo_sms']:
+                webhook_events |= MO_SMS_EVENTS
+            if data['mt_call']:
+                webhook_events |= MT_CALL_EVENTS
+            if data['mo_call']:
+                webhook_events |= MO_CALL_EVENTS
+            if data['alarm']:
+                webhook_events |= ALARM_EVENTS
 
             analytics.track(self.request.user.username, 'temba.org_configured_webhook')
 
@@ -1536,9 +1603,11 @@ class OrgCRUDL(SmartCRUDL):
     class Country(InferOrgMixin, OrgPermsMixin, SmartUpdateView):
 
         class CountryForm(forms.ModelForm):
-            country = forms.ModelChoiceField(Org.get_possible_countries(), required=False,
-                                      label=_("The country used for location values. (optional)"),
-                                      help_text="State and district names will be searched against this country.")
+            country = forms.ModelChoiceField(
+                Org.get_possible_countries(), required=False,
+                label=_("The country used for location values. (optional)"),
+                help_text="State and district names will be searched against this country."
+            )
 
             class Meta:
                 model = Org
@@ -1554,8 +1623,14 @@ class OrgCRUDL(SmartCRUDL):
     class Languages(InferOrgMixin, OrgPermsMixin, SmartUpdateView):
 
         class LanguagesForm(forms.ModelForm):
-            primary_lang = forms.CharField(required=False, label=_('Primary Language'), help_text=_('The primary language will be used for contacts with no language preference.'))
-            languages = forms.CharField(required=False, label=_('Additional Languages'), help_text=('Add any other languages you would like to provide translations for.'))
+            primary_lang = forms.CharField(
+                required=False, label=_('Primary Language'),
+                help_text=_('The primary language will be used for contacts with no language preference.')
+            )
+            languages = forms.CharField(
+                required=False, label=_('Additional Languages'),
+                help_text=_('Add any other languages you would like to provide translations for.')
+            )
 
             def __init__(self, *args, **kwargs):
                 self.org = kwargs['org']
@@ -1656,7 +1731,7 @@ class OrgCRUDL(SmartCRUDL):
             self.org = self.derive_org()
             return self.request.user.has_perm('orgs.org_country') or self.has_org_perm('orgs.org_country')
 
-    class ClearCache(SmartUpdateView): # pragma: no cover
+    class ClearCache(SmartUpdateView):  # pragma: no cover
         fields = ('id',)
         success_message = None
         success_url = 'id@orgs.org_update'

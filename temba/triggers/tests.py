@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import unicode_literals
 
 import time
@@ -7,15 +6,15 @@ import time
 from datetime import timedelta
 from django.core.urlresolvers import reverse
 from django.utils import timezone
-from temba.orgs.models import Language
+from temba.channels.models import Channel, ChannelEvent, CALL, ANSWER, TWITTER
 from temba.contacts.models import TEL_SCHEME
 from temba.flows.models import Flow, ActionSet, FlowRun
+from temba.orgs.models import Language
+from temba.msgs.models import Msg, INCOMING
 from temba.schedules.models import Schedule
-from temba.msgs.models import Msg, INCOMING, Call
-from temba.channels.models import SEND, CALL, ANSWER, RECEIVE
 from temba.tests import TembaTest
 from .models import Trigger
-from temba.triggers.views import DefaultTriggerForm, RegisterTriggerForm
+from .views import DefaultTriggerForm, RegisterTriggerForm
 
 
 class TriggerTest(TembaTest):
@@ -110,7 +109,6 @@ class TriggerTest(TembaTest):
         self.assertEquals(1, Trigger.objects.filter(keyword="startkeyword", is_archived=False).count())
         self.assertFalse(other_trigger.pk == Trigger.objects.filter(keyword="startkeyword", is_archived=False)[0].pk)
 
-
         self.contact = self.create_contact('Eric', '+250788382382')
         self.contact2 = self.create_contact('Nic', '+250788383383')
         group1 = self.create_group("first", [self.contact2])
@@ -149,7 +147,7 @@ class TriggerTest(TembaTest):
         self.assertNotContains(response, 'Start a flow after receiving a call')
 
         # make our channel support ivr
-        self.channel.role += CALL+ANSWER
+        self.channel.role += CALL + ANSWER
         self.channel.save()
 
         response = self.client.get(reverse('triggers.trigger_create'))
@@ -215,7 +213,6 @@ class TriggerTest(TembaTest):
 
         tommorrow = now + timedelta(days=1)
         tommorrow_stamp = time.mktime(tommorrow.timetuple())
-
 
         post_data = dict()
         post_data['omnibox'] = "g-%d,c-%d" % (linkin_park.pk, stromae.pk)
@@ -424,7 +421,6 @@ class TriggerTest(TembaTest):
         # the flow should be created with the primary language for the org
         self.assertEqual(flow.base_language, 'kli')
 
-
     def test_trigger_form(self):
 
         for form in (DefaultTriggerForm, RegisterTriggerForm):
@@ -447,7 +443,6 @@ class TriggerTest(TembaTest):
             pick.delete()
             favorites.delete()
 
-
     def test_unicode_trigger(self):
         self.login(self.admin)
         group = self.create_group(name='Chat', contacts=[])
@@ -457,7 +452,7 @@ class TriggerTest(TembaTest):
         self.client.post(reverse("triggers.trigger_register"), data=post_data)
 
         # did our group join flow get created?
-        flow = Flow.objects.get(flow_type=Flow.FLOW)
+        Flow.objects.get(flow_type=Flow.FLOW)
 
         # now let's try it out
         contact = self.create_contact('Ben', '+250788382382')
@@ -505,9 +500,9 @@ class TriggerTest(TembaTest):
 
         self.assertFalse(missed_call_trigger)
 
-        Call.create_call(self.channel, contact.get_urn(TEL_SCHEME).path, timezone.now(), 0, Call.TYPE_IN_MISSED)
-        self.assertEquals(1, Call.objects.all().count())
-        self.assertEquals(0, flow.runs.all().count())
+        ChannelEvent.create(self.channel, contact.get_urn(TEL_SCHEME).urn, ChannelEvent.TYPE_CALL_IN_MISSED, timezone.now(), 0)
+        self.assertEqual(ChannelEvent.objects.all().count(), 1)
+        self.assertEqual(flow.runs.all().count(), 0)
 
         trigger_url = reverse("triggers.trigger_missed_call")
 
@@ -517,7 +512,7 @@ class TriggerTest(TembaTest):
         post_data = dict(flow=flow.pk)
 
         response = self.client.post(trigger_url, post_data)
-        trigger =  Trigger.objects.all().order_by('-pk')[0]
+        trigger = Trigger.objects.all().order_by('-pk')[0]
 
         self.assertEquals(trigger.trigger_type, Trigger.TYPE_MISSED_CALL)
         self.assertEquals(trigger.flow.pk, flow.pk)
@@ -526,10 +521,10 @@ class TriggerTest(TembaTest):
 
         self.assertEquals(missed_call_trigger.pk, trigger.pk)
 
-        Call.create_call(self.channel, contact.get_urn(TEL_SCHEME).path, timezone.now(), 0, Call.TYPE_IN_MISSED)
-        self.assertEquals(2, Call.objects.all().count())
-        self.assertEquals(1, flow.runs.all().count())
-        self.assertEquals(flow.runs.all()[0].contact.pk, contact.pk)
+        ChannelEvent.create(self.channel, contact.get_urn(TEL_SCHEME).urn, ChannelEvent.TYPE_CALL_IN_MISSED, timezone.now(), 0)
+        self.assertEqual(ChannelEvent.objects.all().count(), 2)
+        self.assertEqual(flow.runs.all().count(), 1)
+        self.assertEqual(flow.runs.all()[0].contact.pk, contact.pk)
 
         other_flow = Flow.copy(flow, self.admin)
         post_data = dict(flow=other_flow.pk)
@@ -546,8 +541,8 @@ class TriggerTest(TembaTest):
             post_data = dict(flow=flow.pk)
 
             response = self.client.post(trigger_url, post_data)
-            self.assertEquals(i+2, Trigger.objects.all().count())
-            self.assertEquals(1, Trigger.objects.filter(is_archived=False, trigger_type=Trigger.TYPE_MISSED_CALL).count())
+            self.assertEqual(i + 2, Trigger.objects.all().count())
+            self.assertEqual(1, Trigger.objects.filter(is_archived=False, trigger_type=Trigger.TYPE_MISSED_CALL).count())
 
         # even unarchiving we only have one acive trigger at a time
         triggers = Trigger.objects.filter(trigger_type=Trigger.TYPE_MISSED_CALL, is_archived=True)
@@ -555,7 +550,7 @@ class TriggerTest(TembaTest):
 
         post_data = dict()
         post_data['action'] = 'restore'
-        post_data['objects'] = [_.pk for _ in triggers]
+        post_data['objects'] = [t.pk for t in triggers]
 
         response = self.client.post(reverse("triggers.trigger_archived"), post_data)
         self.assertEquals(1, Trigger.objects.filter(is_archived=False, trigger_type=Trigger.TYPE_MISSED_CALL).count())
@@ -577,7 +572,7 @@ class TriggerTest(TembaTest):
 
         self.assertFalse(catch_all_trigger)
 
-        Msg.create_incoming(self.channel, (TEL_SCHEME, contact.get_urn().path), "Hi")
+        Msg.create_incoming(self.channel, contact.get_urn().urn, "Hi")
         self.assertEquals(1, Msg.all_messages.all().count())
         self.assertEquals(0, flow.runs.all().count())
 
@@ -598,7 +593,7 @@ class TriggerTest(TembaTest):
 
         self.assertEquals(catch_all_trigger.pk, trigger.pk)
 
-        incoming = Msg.create_incoming(self.channel, (TEL_SCHEME, contact.get_urn().path), "Hi")
+        incoming = Msg.create_incoming(self.channel, contact.get_urn().urn, "Hi")
         self.assertEquals(1, flow.runs.all().count())
         self.assertEquals(flow.runs.all()[0].contact.pk, contact.pk)
         reply = Msg.all_messages.get(response_to=incoming)
@@ -667,7 +662,7 @@ class TriggerTest(TembaTest):
         FlowRun.objects.all().delete()
         Msg.all_messages.all().delete()
 
-        incoming = Msg.create_incoming(self.channel, (TEL_SCHEME, contact.get_urn().path), "Hi")
+        incoming = Msg.create_incoming(self.channel, contact.get_urn().urn, "Hi")
         self.assertEquals(0, FlowRun.objects.all().count())
         self.assertFalse(Msg.all_messages.filter(response_to=incoming))
 
@@ -675,7 +670,7 @@ class TriggerTest(TembaTest):
         group.contacts.add(contact)
 
         # this time should trigger the flow
-        incoming = Msg.create_incoming(self.channel, (TEL_SCHEME, contact.get_urn().path), "Hi")
+        incoming = Msg.create_incoming(self.channel, contact.get_urn().urn, "Hi")
         self.assertEquals(1, FlowRun.objects.all().count())
         self.assertEquals(other_flow.runs.all()[0].contact.pk, contact.pk)
         reply = Msg.all_messages.get(response_to=incoming)
@@ -767,7 +762,7 @@ class TriggerTest(TembaTest):
 
         # create trigger for specific contact group
         group = self.create_group("first", [self.contact2])
-        trigger = Trigger.objects.create(org=self.org, keyword='where', flow=flow, 
+        trigger = Trigger.objects.create(org=self.org, keyword='where', flow=flow,
                                          created_by=self.admin, modified_by=self.admin)
         trigger.groups.add(group)
 
@@ -798,8 +793,8 @@ class TriggerTest(TembaTest):
         keyword = 'unique'
 
         # no group trigger
-        trigger1 = Trigger.objects.create(org=self.org, keyword=keyword, flow=flow1,
-                                          created_by=self.admin, modified_by=self.admin)
+        Trigger.objects.create(org=self.org, keyword=keyword, flow=flow1,
+                               created_by=self.admin, modified_by=self.admin)
 
         # group1 trigger
         trigger2 = Trigger.objects.create(org=self.org, keyword=keyword, flow=flow2,
@@ -836,3 +831,29 @@ class TriggerTest(TembaTest):
         # incoming4 should not be handled
         self.assertFalse(Trigger.find_and_handle(incoming4))
 
+    def test_export_import(self):
+        # tweak our current channel to be twitter so we can create a channel-based trigger
+        Channel.objects.filter(id=self.channel.id).update(channel_type=TWITTER)
+        flow = self.create_flow()
+
+        group = self.create_group("Trigger Group", [])
+
+        # create a trigger on this flow for the follow actions but only on some groups
+        trigger = Trigger.objects.create(org=self.org, flow=flow, trigger_type=Trigger.TYPE_FOLLOW, channel=self.channel,
+                                         created_by=self.admin, modified_by=self.admin)
+        trigger.groups.add(group)
+
+        # export everything
+        export = Flow.export_definitions([flow])
+
+        # remove our trigger
+        Trigger.objects.all().delete()
+
+        # and reimport them.. trigger should be recreated
+        self.org.import_app(export, self.admin)
+
+        trigger = Trigger.objects.get()
+        self.assertEqual(trigger.trigger_type, Trigger.TYPE_FOLLOW)
+        self.assertEqual(trigger.flow, flow)
+        self.assertEqual(trigger.channel, self.channel)
+        self.assertEqual(list(trigger.groups.all()), [group])

@@ -6,12 +6,13 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from smartmin.models import SmartModel
+from temba.channels.models import Channel, ChannelEvent
 from temba.contacts.models import Contact, ContactGroup
-from temba.orgs.models import Org
-from temba.channels.models import Channel
 from temba.flows.models import Flow, FlowRun
-from temba.msgs.models import Msg, Call
 from temba.ivr.models import IVRCall
+from temba.msgs.models import Msg
+from temba.orgs.models import Org
+
 
 class Trigger(SmartModel):
     """
@@ -108,7 +109,7 @@ class Trigger(SmartModel):
                         group = ContactGroup.get_user_group(org, group_spec['name'])
 
                     if not group:
-                        group = ContactGroup.create(org, user, group_spec['name'])
+                        group = ContactGroup.create_static(org, user, group_spec['name'])
 
                     if not group.is_active:
                         group.is_active = True
@@ -116,7 +117,7 @@ class Trigger(SmartModel):
 
                     groups.append(group)
 
-                flow = Flow.objects.get(org=org, pk=trigger_spec['flow']['id'])
+                flow = Flow.objects.get(org=org, pk=trigger_spec['flow']['id'], is_active=True)
 
                 # see if that trigger already exists
                 trigger = Trigger.objects.filter(org=org, trigger_type=trigger_spec['trigger_type'])
@@ -137,7 +138,7 @@ class Trigger(SmartModel):
                     # if we have a channel resolve it
                     channel = trigger_spec.get('channel', None)  # older exports won't have a channel
                     if channel:
-                        channel = Channel.objects.filter(pk=channel.pk, org=org).first()
+                        channel = Channel.objects.filter(pk=channel, org=org).first()
 
                     trigger = Trigger.objects.create(org=org, trigger_type=trigger_spec['trigger_type'],
                                                      keyword=trigger_spec['keyword'], flow=flow,
@@ -146,7 +147,6 @@ class Trigger(SmartModel):
 
                     for group in groups:
                         trigger.groups.add(group)
-
 
     @classmethod
     def get_triggers_of_type(cls, org, trigger_type):
@@ -157,7 +157,7 @@ class Trigger(SmartModel):
         if isinstance(entity, Msg):
             contact = entity.contact
             start_msg = entity
-        elif isinstance(entity, Call) or isinstance(entity, IVRCall):
+        elif isinstance(entity, ChannelEvent) or isinstance(entity, IVRCall):
             contact = entity.contact
             start_msg = Msg(org=entity.org, contact=contact, channel=entity.channel, created_on=timezone.now(), id=0)
         elif isinstance(entity, Contact):
@@ -319,6 +319,13 @@ class Trigger(SmartModel):
 
         return [each_trigger.pk for each_trigger in triggers]
 
+    def release(self):
+        """
+        Releases this Trigger, use this instead of delete
+        """
+        self.is_active = False
+        self.save()
+
     def fire(self):
         if self.is_archived or not self.is_active:
             return None
@@ -335,6 +342,6 @@ class Trigger(SmartModel):
             self.trigger_count += 1
             self.save()
 
-            return self.flow.start(groups, contacts, restart_participants=True) 
+            return self.flow.start(groups, contacts, restart_participants=True)
 
         return False
